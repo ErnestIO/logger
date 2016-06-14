@@ -6,8 +6,8 @@ This microservice will send all configured nats messages to logstash, giving add
 
 ## Build status
 
-* Master: [![CircleCI Master](https://circleci.com/gh/ErnestIO/logger/tree/master.svg?style=svg&circle-token=cad48d128f889cbf40f7143a5882313668989ce6)](https://circleci.com/gh/ErnestIO/logger/tree/master)
-* Develop: [![CircleCI Develop](https://circleci.com/gh/ErnestIO/logger/tree/develop.svg?style=svg&circle-token=cad48d128f889cbf40f7143a5882313668989ce6)](https://circleci.com/gh/ErnestIO/logger/tree/develop)
+* Master: [![CircleCI](https://circleci.com/gh/ErnestIO/logger/tree/master.svg?style=svg)](https://circleci.com/gh/ErnestIO/logger/tree/master)
+* Develop: [![CircleCI](https://circleci.com/gh/ErnestIO/logger/tree/develop.svg?style=svg)](https://circleci.com/gh/ErnestIO/logger/tree/develop)
 
 
 ## Installing
