@@ -48,16 +48,17 @@ func main() {
 
 // Message holds the general structure of all messages
 type Message struct {
-	Datacenter    Datacenter  `json:"datacenter"`
-	Routers       []PwdStruct `json:"routers"`
-	Networks      []PwdStruct `json:"networks"`
-	Executions    []PwdStruct `json:"executions"`
-	Firewalls     []PwdStruct `json:"firewalls"`
-	Instances     []PwdStruct `json:"instances"`
-	Loadbalancers []PwdStruct `json:"loadbalancers"`
-	Datacenters   Itemable    `json:"datacenters"`
-	Nats          []PwdStruct `json:"nats"`
-	Password      string      `json:"datacenter_password"`
+	Datacenter     Datacenter  `json:"datacenter"`
+	Routers        []PwdStruct `json:"routers"`
+	Networks       []PwdStruct `json:"networks"`
+	Executions     []PwdStruct `json:"executions"`
+	Firewalls      []PwdStruct `json:"firewalls"`
+	Instances      []PwdStruct `json:"instances"`
+	Loadbalancers  []PwdStruct `json:"loadbalancers"`
+	Datacenters    Itemable    `json:"datacenters"`
+	Nats           []PwdStruct `json:"nats"`
+	Password       string      `json:"datacenter_password"`
+	ConfigPassword string      `json:"password"`
 }
 
 // Itemable holds any items for any datacenters
@@ -130,6 +131,9 @@ func getPassword(s string) string {
 	}
 	if m.Password != "" {
 		return m.Password
+	}
+	if m.ConfigPassword != "" {
+		return m.ConfigPassword
 	}
 
 	return m.Datacenter.Pwd
