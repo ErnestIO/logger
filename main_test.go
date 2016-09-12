@@ -25,7 +25,7 @@ func TestPreProcess(t *testing.T) {
 	})
 
 	Convey("Given an input for routers creation", t, func() {
-		routerMessage := `{"service":"1","routers":[{"datacenter_name":"test","datacenter_password":"p@55w0rd"}]}`
+		routerMessage := `{"service":"1","components":[{"datacenter_name":"test","datacenter_password":"p@55w0rd"}]}`
 		Convey("the message should be processed correctly and its password removed", func() {
 			message := PreProcess(routerMessage)
 			So(strings.Contains(message, testPassword), ShouldBeFalse)
@@ -35,7 +35,7 @@ func TestPreProcess(t *testing.T) {
 	})
 
 	Convey("Given an input for networks creation", t, func() {
-		networkMessage := `{"service":"1","networks":[{"datacenter_name":"test","datacenter_password":"p@55w0rd"}]}`
+		networkMessage := `{"service":"1","components":[{"datacenter_name":"test","datacenter_password":"p@55w0rd"}]}`
 		Convey("the message should be processed correctly and its password removed", func() {
 			message := PreProcess(networkMessage)
 			So(strings.Contains(message, testPassword), ShouldBeFalse)
@@ -45,7 +45,7 @@ func TestPreProcess(t *testing.T) {
 	})
 
 	Convey("Given an input for instances creation", t, func() {
-		instanceMessage := `{"service":"1","instances":[{"datacenter_name":"test","datacenter_password":"p@55w0rd"}]}`
+		instanceMessage := `{"service":"1","components":[{"datacenter_name":"test","datacenter_password":"p@55w0rd"}]}`
 		Convey("the message should be processed correctly and its password removed", func() {
 			message := PreProcess(instanceMessage)
 			So(strings.Contains(message, testPassword), ShouldBeFalse)
@@ -55,7 +55,7 @@ func TestPreProcess(t *testing.T) {
 	})
 
 	Convey("Given an input for firewalls creation", t, func() {
-		firewallMessage := `{"service":"1","firewalls":[{"datacenter_name":"test","datacenter_password":"p@55w0rd"}]}`
+		firewallMessage := `{"service":"1","components":[{"datacenter_name":"test","datacenter_password":"p@55w0rd"}]}`
 		Convey("the message should be processed correctly and its password removed", func() {
 			message := PreProcess(firewallMessage)
 			So(strings.Contains(message, testPassword), ShouldBeFalse)
@@ -65,7 +65,7 @@ func TestPreProcess(t *testing.T) {
 	})
 
 	Convey("Given an input for nats creation", t, func() {
-		natMessage := `{"service":"1","nats":[{"datacenter_name":"test","datacenter_password":"p@55w0rd"}]}`
+		natMessage := `{"service":"1","components":[{"datacenter_name":"test","datacenter_password":"p@55w0rd"}]}`
 		Convey("the message should be processed correctly and its password removed", func() {
 			message := PreProcess(natMessage)
 			So(strings.Contains(message, testPassword), ShouldBeFalse)
