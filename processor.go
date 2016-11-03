@@ -50,113 +50,198 @@ type ServiceSet struct {
 // PreProcess gets the password and replaces it before writing to a log
 func PreProcess(s string) string {
 	// Password
-	if pwd := getPassword(s); pwd != "" {
+	for _, pwd := range getPasswords(s) {
 		s = strings.Replace(s, pwd, "***", -1)
-	} else if mappingPassword := getSeedFromMapping(s, getPassword); mappingPassword != "" {
+	}
+
+	for _, mappingPassword := range getSeedFromMapping(s, getPasswords) {
 		s = strings.Replace(s, mappingPassword, "***", -1)
-	} else if l := getSeedFromList(s, getPassword); l != "" {
+	}
+
+	for _, l := range getSeedFromList(s, getPasswords) {
 		s = strings.Replace(s, l, "***", -1)
 	}
 
 	// Token
-	if token := getToken(s); token != "" {
+	for _, token := range getTokens(s) {
 		s = strings.Replace(s, token, "***", -1)
-	} else if mappingToken := getSeedFromMapping(s, getToken); mappingToken != "" {
+	}
+	for _, mappingToken := range getSeedFromMapping(s, getTokens) {
 		s = strings.Replace(s, mappingToken, "***", -1)
-	} else if l := getSeedFromList(s, getToken); l != "" {
+	}
+	for _, l := range getSeedFromList(s, getTokens) {
 		s = strings.Replace(s, l, "***", -1)
 	}
 
 	// Secret
-	if secret := getSecret(s); secret != "" {
+	for _, secret := range getSecrets(s) {
 		s = strings.Replace(s, secret, "***", -1)
-	} else if mappingSecret := getSeedFromMapping(s, getSecret); mappingSecret != "" {
+	}
+	for _, mappingSecret := range getSeedFromMapping(s, getSecrets) {
 		s = strings.Replace(s, mappingSecret, "***", -1)
-	} else if l := getSeedFromList(s, getSecret); l != "" {
+	}
+	for _, l := range getSeedFromList(s, getSecrets) {
 		s = strings.Replace(s, l, "***", -1)
 	}
 
 	return s
 }
 
-func getPassword(s string) string {
-	m := Message{}
-	json.Unmarshal([]byte(s), &m)
-	if len(m.Components) > 0 {
-		if m.Components[0].Pwd != "" {
-			return m.Components[0].Pwd
-		}
-	}
-	if len(m.Datacenters.Items) > 0 {
-		if m.Datacenters.Items[0].Pwd != "" {
-			return m.Datacenters.Items[0].Pwd
-		}
-	}
-	if m.Password != "" {
-		return m.Password
-	}
-	if m.ConfigPassword != "" {
-		return m.ConfigPassword
+func getPasswords(s string) []string {
+	var pwds []string
+
+	var m Message
+	err := json.Unmarshal([]byte(s), &m)
+	if err == nil {
+		return processPasswords(&m)
 	}
 
-	return m.Datacenter.Pwd
+	var cm []Message
+	err = json.Unmarshal([]byte(s), &cm)
+	if err != nil {
+		return pwds
+	}
+
+	for _, m := range cm {
+		pwds = append(pwds, processPasswords(&m)...)
+	}
+
+	return pwds
 }
 
-func getToken(s string) string {
-	m := Message{}
-	json.Unmarshal([]byte(s), &m)
-	if len(m.Components) > 0 {
-		if m.Components[0].Token != "" {
-			return m.Components[0].Token
+func processPasswords(m *Message) []string {
+	var pwds []string
+	for _, c := range m.Components {
+		if c.Pwd != "" {
+			pwds = append(pwds, c.Pwd)
 		}
 	}
-	if len(m.Datacenters.Items) > 0 {
-		if m.Datacenters.Items[0].Token != "" {
-			return m.Datacenters.Items[0].Token
+
+	for _, d := range m.Datacenters.Items {
+		if d.Pwd != "" {
+			pwds = append(pwds, d.Pwd)
+		}
+	}
+
+	if m.Password != "" {
+		pwds = append(pwds, m.Password)
+	}
+	if m.ConfigPassword != "" {
+		pwds = append(pwds, m.ConfigPassword)
+	}
+	if m.Datacenter.Pwd != "" {
+		pwds = append(pwds, m.Datacenter.Pwd)
+	}
+
+	return pwds
+}
+
+func getTokens(s string) []string {
+	var pwds []string
+
+	var m Message
+	err := json.Unmarshal([]byte(s), &m)
+	if err == nil {
+		return processTokens(&m)
+	}
+
+	var cm []Message
+	err = json.Unmarshal([]byte(s), &cm)
+	if err != nil {
+		return pwds
+	}
+
+	for _, m := range cm {
+		pwds = append(pwds, processTokens(&m)...)
+	}
+
+	return pwds
+}
+
+func processTokens(m *Message) []string {
+	var pwds []string
+
+	for _, c := range m.Components {
+		if c.Token != "" {
+			pwds = append(pwds, c.Token)
+		}
+	}
+	for _, d := range m.Datacenters.Items {
+		if d.Token != "" {
+			pwds = append(pwds, d.Token)
 		}
 	}
 	if m.Token != "" {
-		return m.Token
+		pwds = append(pwds, m.Token)
 	}
 	if m.ConfigToken != "" {
-		return m.ConfigToken
+		pwds = append(pwds, m.ConfigToken)
 	}
 	if m.BasicToken != "" {
-		return m.BasicToken
+		pwds = append(pwds, m.BasicToken)
 	}
 
-	return m.Datacenter.Token
+	if m.Datacenter.Token != "" {
+		pwds = append(pwds, m.Datacenter.Token)
+	}
+
+	return pwds
 }
 
-func getSecret(s string) string {
-	m := Message{}
-	json.Unmarshal([]byte(s), &m)
-	if len(m.Components) > 0 {
-		if m.Components[0].Secret != "" {
-			return m.Components[0].Secret
+func getSecrets(s string) []string {
+	var pwds []string
+
+	var m Message
+	err := json.Unmarshal([]byte(s), &m)
+	if err == nil {
+		return processSecrets(&m)
+	}
+
+	var cm []Message
+	err = json.Unmarshal([]byte(s), &cm)
+	if err != nil {
+		return pwds
+	}
+
+	for _, m := range cm {
+		pwds = append(pwds, processSecrets(&m)...)
+	}
+
+	return pwds
+}
+
+func processSecrets(m *Message) []string {
+	var pwds []string
+
+	for _, c := range m.Components {
+		if c.Secret != "" {
+			pwds = append(pwds, c.Secret)
 		}
 	}
-	if len(m.Datacenters.Items) > 0 {
-		if m.Datacenters.Items[0].Secret != "" {
-			return m.Datacenters.Items[0].Secret
+	for _, d := range m.Datacenters.Items {
+		if d.Secret != "" {
+			pwds = append(pwds, d.Secret)
 		}
 	}
 	if m.Secret != "" {
-		return m.Secret
+		pwds = append(pwds, m.Secret)
 	}
 	if m.ConfigSecret != "" {
-		return m.ConfigSecret
+		pwds = append(pwds, m.ConfigSecret)
 	}
 	if m.BasicSecret != "" {
-		return m.BasicSecret
+		pwds = append(pwds, m.BasicSecret)
+	}
+	if m.Datacenter.Secret != "" {
+		pwds = append(pwds, m.Datacenter.Secret)
 	}
 
-	return m.Datacenter.Secret
+	return pwds
 }
 
-type getSeed func(string) string
+type getSeed func(string) []string
 
-func getSeedFromMapping(s string, fn getSeed) string {
+func getSeedFromMapping(s string, fn getSeed) []string {
 	m := ServiceSet{}
 	json.Unmarshal([]byte(s), &m)
 	message := strings.Replace(m.Message, "\\\"", "\"", -1)
@@ -164,11 +249,11 @@ func getSeedFromMapping(s string, fn getSeed) string {
 	return fn(message)
 }
 
-func getSeedFromList(s string, fn getSeed) string {
+func getSeedFromList(s string, fn getSeed) []string {
 	m := []Datacenter{}
 	json.Unmarshal([]byte(s), &m)
 	if len(m) == 0 {
-		return ""
+		return []string{}
 	}
 	message, _ := json.Marshal(m[0])
 
