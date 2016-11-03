@@ -2,7 +2,35 @@
 
 ## Synopsis
 
-This microservice will send all configured nats messages to logstash, giving additional visibility between events inside of ernest.
+Logger is listening for all messages on nats, it will encode the sensible data for each message and will send it to the created logger.
+
+The default logger is a basic logger, which is mainly sending data to a log file. Logger will create this default basic logger based on the environment variable *ERNEST_LOG_FILE*, in case it's not defined it wont create a default listener.
+
+You can create / remove new loggers by sending nats requests, for example:
+```
+# New basic logger
+$ nats-pub logger.set `{"type":"basic","logfile":"/tmp/ernest.log"}`
+
+# Ovrride basic logger
+$ nats-pub logger.set `{"type":"basic","logfile":"/tmp/ernest-2.log"}`
+
+# Delete basic logger
+$ nats-pub logger.del `{"type":"basic"}`
+```
+
+```
+# New logstash logger
+$ nats-pub logger.set `{"type":"logstash","hostname":"http://my-new-logstash.com/","port":2234,"timeout":1}`
+
+# Ovrride logstash logger
+$ nats-pub logger.set `{"type":"logstash","hostname":"http://my-logstash.com/","port":2234,"timeout":1}`
+
+# Delete logstash logger
+$ nats-pub logger.del `{"type":"logstash"}`
+```
+
+Additionally an endpoint is exposed in order to query the active loggers
+
 
 ## Build status
 
