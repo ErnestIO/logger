@@ -92,4 +92,14 @@ func TestPreProcess(t *testing.T) {
 		})
 	})
 
+	Convey("Given an input for a list of datacenters", t, func() {
+		configurationMessage := `[{"id":4,"group_id":2,"name":"name","type":"aws","region":"eu-west-1","username":"name","password":"","vcloud_url":"","vse_url":"","external_network":"","token":"t0k3n","secret":"s3cr3t","CreatedAt":"2016-11-03T14:32:30.470151Z","UpdatedAt":"2016-11-03T14:32:30.470151Z"},{"id":5,"group_id":2,"name":"name","type":"vcloud","region":"","username":"name@org","password":"p4ssw0rd","vcloud_url":"https://myvdc.net","vse_url":"","external_network":"NETWORK","token":"","secret":"","CreatedAt":"2016-11-03T14:32:43.428661Z","UpdatedAt":"2016-11-03T14:32:43.428661Z"}]`
+		Convey("the message should be processed correctly and its password removed", func() {
+			message := PreProcess(configurationMessage)
+			So(strings.Contains(message, "p4ssw0rd"), ShouldBeFalse)
+			So(strings.Contains(message, "t0k3n"), ShouldBeFalse)
+			So(strings.Contains(message, "s3cr3t"), ShouldBeFalse)
+		})
+	})
+
 }
