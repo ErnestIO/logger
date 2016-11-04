@@ -29,13 +29,6 @@ type Itemable struct {
 	Items []Datacenter `json:"items"`
 }
 
-// Datacenter holds datacenter passwords
-type Datacenter struct {
-	Pwd    string `json:"password"`
-	Token  string `json:"token"`
-	Secret string `json:"secret"`
-}
-
 // PwdStruct holds datacenter passwords for other items
 type PwdStruct struct {
 	Pwd    string `json:"datacenter_password"`
@@ -43,6 +36,7 @@ type PwdStruct struct {
 	Secret string `json:"datacenter_secret"`
 }
 
+// ServiceSet : ...
 type ServiceSet struct {
 	Message string `json:"mapping"`
 }
@@ -51,37 +45,37 @@ type ServiceSet struct {
 func PreProcess(s string) string {
 	// Password
 	for _, pwd := range getPasswords(s) {
-		s = strings.Replace(s, pwd, "***", -1)
+		s = strings.Replace(s, pwd, obfuscation, -1)
 	}
 
 	for _, mappingPassword := range getSeedFromMapping(s, getPasswords) {
-		s = strings.Replace(s, mappingPassword, "***", -1)
+		s = strings.Replace(s, mappingPassword, obfuscation, -1)
 	}
 
 	for _, l := range getSeedFromList(s, getPasswords) {
-		s = strings.Replace(s, l, "***", -1)
+		s = strings.Replace(s, l, obfuscation, -1)
 	}
 
 	// Token
 	for _, token := range getTokens(s) {
-		s = strings.Replace(s, token, "***", -1)
+		s = strings.Replace(s, token, obfuscation, -1)
 	}
 	for _, mappingToken := range getSeedFromMapping(s, getTokens) {
-		s = strings.Replace(s, mappingToken, "***", -1)
+		s = strings.Replace(s, mappingToken, obfuscation, -1)
 	}
 	for _, l := range getSeedFromList(s, getTokens) {
-		s = strings.Replace(s, l, "***", -1)
+		s = strings.Replace(s, l, obfuscation, -1)
 	}
 
 	// Secret
 	for _, secret := range getSecrets(s) {
-		s = strings.Replace(s, secret, "***", -1)
+		s = strings.Replace(s, secret, obfuscation, -1)
 	}
 	for _, mappingSecret := range getSeedFromMapping(s, getSecrets) {
-		s = strings.Replace(s, mappingSecret, "***", -1)
+		s = strings.Replace(s, mappingSecret, obfuscation, -1)
 	}
 	for _, l := range getSeedFromList(s, getSecrets) {
-		s = strings.Replace(s, l, "***", -1)
+		s = strings.Replace(s, l, obfuscation, -1)
 	}
 
 	return s
