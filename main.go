@@ -24,6 +24,7 @@ var err error
 var nc *nats.Conn
 var messages []string
 var adapters map[string]Adapter
+var patternsToObfuscate []string
 
 var newBasicAdapterListener = func(m *nats.Msg) {
 	if a, err := NewBasicAdapter(nc, m.Data); err != nil {
@@ -32,7 +33,7 @@ var newBasicAdapterListener = func(m *nats.Msg) {
 			log.Println(err.Error())
 		}
 	} else {
-		if err = a.Manage(messages, PreProcess); err != nil {
+		if err = a.Manage(messages, Obfuscate); err != nil {
 			log.Println(err.Error())
 		}
 		adapters["basic"] = &a
@@ -50,7 +51,7 @@ var newLogstashAdapterListener = func(m *nats.Msg) {
 			log.Println(err.Error())
 		}
 	} else {
-		if err = a.Manage(messages, PreProcess); err != nil {
+		if err = a.Manage(messages, Obfuscate); err != nil {
 			log.Println(err.Error())
 		}
 		adapters["logstash"] = &a
@@ -68,7 +69,7 @@ var newRollbarAdapterListener = func(m *nats.Msg) {
 			log.Println(err.Error())
 		}
 	} else {
-		if err = a.Manage(messages, PreProcess); err != nil {
+		if err = a.Manage(messages, Obfuscate); err != nil {
 			log.Println(err.Error())
 		}
 		adapters["rollbar"] = &a
@@ -162,6 +163,15 @@ var findAdapterListener = func(m *nats.Msg) {
 	}
 }
 
+var addPatterns = func(m *nats.Msg) {
+	var d Datacenter
+	if err := json.Unmarshal(m.Data, &d); err != nil {
+		log.Println(err.Error())
+		return
+	}
+	addDatacenterPatterns(d, &patternsToObfuscate)
+}
+
 // DefaultAdapter : creates the default adapter (basic in this case)
 func DefaultAdapter() {
 	if path := os.Getenv("ERNEST_LOG_FILE"); path != "" {
@@ -188,6 +198,10 @@ func main() {
 	}
 
 	if _, err = nc.Subscribe("logger.find", findAdapterListener); err != nil {
+		log.Println(err.Error())
+	}
+
+	if _, err = nc.Subscribe("datacenter.set", addPatterns); err != nil {
 		log.Println(err.Error())
 	}
 
