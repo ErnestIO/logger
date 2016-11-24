@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/nats-io/nats"
 	"github.com/stvp/rollbar"
@@ -42,7 +43,11 @@ func (l *RollbarAdapter) Manage(subjects []string, fn MessageProcessor) (err err
 
 	for _, subject := range subjects {
 		s, _ := l.Client.Subscribe(subject, func(m *nats.Msg) {
-			rollbar.Message("info", m.Subject+" : '"+fn(string(m.Data))+"'")
+			if strings.Contains(m.Subject, ".error") {
+				rollbar.Message("error", m.Subject+" : '"+fn(string(m.Data))+"'")
+			} else {
+				rollbar.Message("info", m.Subject+" : '"+fn(string(m.Data))+"'")
+			}
 		})
 		l.Subscribers = append(l.Subscribers, s)
 	}
