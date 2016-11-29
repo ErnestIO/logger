@@ -25,15 +25,18 @@ type RollbarAdapter struct {
 }
 
 // NewRollbarAdapter : Rollbar adapter constructor
-func NewRollbarAdapter(nc *nats.Conn, config []byte) (a RollbarAdapter, err error) {
+func NewRollbarAdapter(nc *nats.Conn, config []byte) (Adapter, error) {
+	var a RollbarAdapter
+	var err error
+
 	if err := json.Unmarshal(config, &a); err != nil {
-		return a, err
+		return &a, err
 	}
 
 	a.Client = nc
 	log.Println("Logger set up")
 
-	return a, err
+	return &a, err
 }
 
 // Manage : Manages the subscriptions
@@ -67,4 +70,9 @@ func (l *RollbarAdapter) Stop() {
 		log.Println(err.Error())
 	}
 	log.SetOutput(os.Stdout)
+}
+
+// Name : get the adapter name
+func (l *RollbarAdapter) Name() string {
+	return "rollbar"
 }

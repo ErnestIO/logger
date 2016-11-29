@@ -33,9 +33,12 @@ type LogMessage struct {
 }
 
 // NewLogstashAdapter : LogstashAdapter constructor
-func NewLogstashAdapter(nc *nats.Conn, config []byte) (l LogstashAdapter, err error) {
+func NewLogstashAdapter(nc *nats.Conn, config []byte) (Adapter, error) {
+	var l LogstashAdapter
+	var err error
+
 	if err = json.Unmarshal(config, &l); err != nil {
-		return l, err
+		return &l, err
 	}
 
 	l.Client = nc
@@ -44,7 +47,7 @@ func NewLogstashAdapter(nc *nats.Conn, config []byte) (l LogstashAdapter, err er
 		log.Println(err.Error())
 	}
 
-	return l, nil
+	return &l, nil
 }
 
 // Manage : Manages the subscriptions
@@ -102,4 +105,9 @@ func (l *LogstashAdapter) writeln(message []byte) (err error) {
 		return err
 	}
 	return nil
+}
+
+// Name : get the adapter name
+func (l *LogstashAdapter) Name() string {
+	return "logstash"
 }
