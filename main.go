@@ -31,7 +31,7 @@ var patternsToObfuscate []string
 func register(a *Adapter, m *nats.Msg, err error) {
 	if err != nil {
 		log.Println(err.Error())
-		if err := nc.Publish(m.Reply, []byte(`{"error":"`+err.Error()+`"}`)); err != nil {
+		if err := nc.Publish(m.Reply, []byte(`{"_error":"`+err.Error()+`"}`)); err != nil {
 			log.Println(err.Error())
 		}
 	} else {
