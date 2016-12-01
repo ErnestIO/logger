@@ -237,7 +237,7 @@ type getSeed func(string) []string
 
 func getSeedFromMapping(s string, fn getSeed) []string {
 	m := ServiceSet{}
-	json.Unmarshal([]byte(s), &m)
+	_ = json.Unmarshal([]byte(s), &m)
 	message := strings.Replace(m.Message, "\\\"", "\"", -1)
 
 	return fn(message)
@@ -245,7 +245,7 @@ func getSeedFromMapping(s string, fn getSeed) []string {
 
 func getSeedFromList(s string, fn getSeed) []string {
 	m := []Datacenter{}
-	json.Unmarshal([]byte(s), &m)
+	_ = json.Unmarshal([]byte(s), &m)
 	if len(m) == 0 {
 		return []string{}
 	}

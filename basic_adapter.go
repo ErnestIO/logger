@@ -28,26 +28,29 @@ type BasicAdapter struct {
 }
 
 // NewBasicAdapter : Basic adapter constructor
-func NewBasicAdapter(nc *nats.Conn, config []byte) (a BasicAdapter, err error) {
+func NewBasicAdapter(nc *nats.Conn, config []byte) (Adapter, error) {
+	var a BasicAdapter
+	var err error
+
 	if err := json.Unmarshal(config, &a); err != nil {
-		return a, err
+		return &a, err
 	}
 
 	if _, err := os.Stat(a.LogFile); os.IsNotExist(err) {
-		return a, errors.New("Specified file '" + a.LogFile + "' does not exist")
+		return &a, errors.New("Specified file '" + a.LogFile + "' does not exist")
 	}
 
 	a.File, err = os.OpenFile(a.LogFile, os.O_WRONLY|os.O_APPEND, 0640)
 	if err != nil {
 		log.Fatalln(err)
-		return a, errors.New("Seems I don't have permissions to write on " + a.LogFile)
+		return &a, errors.New("Seems I don't have permissions to write on " + a.LogFile)
 	}
 	log.SetOutput(io.MultiWriter(a.File, os.Stdout))
 
 	a.Client = nc
 	log.Println("Logger set up")
 
-	return a, err
+	return &a, err
 }
 
 // Manage : Manages the subscriptions
@@ -74,4 +77,9 @@ func (l *BasicAdapter) Stop() {
 		log.Println(err.Error())
 	}
 	log.SetOutput(os.Stdout)
+}
+
+// Name : get the adapter name
+func (l *BasicAdapter) Name() string {
+	return "basic"
 }

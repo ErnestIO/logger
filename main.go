@@ -16,7 +16,9 @@ import (
 
 // Adapter : interface for Logger adapters
 type Adapter interface {
+	Manage([]string, MessageProcessor) error
 	Stop()
+	Name() string
 }
 
 var silent bool
@@ -26,58 +28,38 @@ var messages []string
 var adapters map[string]Adapter
 var patternsToObfuscate []string
 
-var newBasicAdapterListener = func(m *nats.Msg) {
-	if a, err := NewBasicAdapter(nc, m.Data); err != nil {
+func register(a *Adapter, m *nats.Msg, err error) {
+	if err != nil {
 		log.Println(err.Error())
 		if err := nc.Publish(m.Reply, []byte(`{"error":"`+err.Error()+`"}`)); err != nil {
 			log.Println(err.Error())
 		}
 	} else {
-		if err = a.Manage(messages, Obfuscate); err != nil {
+		persist(m)
+		if err = (*a).Manage(messages, Obfuscate); err != nil {
 			log.Println(err.Error())
 		}
-		adapters["basic"] = &a
-		body, _ := json.Marshal(adapters["basic"])
+		adapters[(*a).Name()] = *a
+		body, _ := json.Marshal(adapters[(*a).Name()])
 		if err := nc.Publish(m.Reply, body); err != nil {
 			log.Println(err.Error())
 		}
 	}
+}
+
+var newBasicAdapterListener = func(m *nats.Msg) {
+	a, err := NewBasicAdapter(nc, m.Data)
+	register(&a, m, err)
 }
 
 var newLogstashAdapterListener = func(m *nats.Msg) {
-	if a, err := NewLogstashAdapter(nc, m.Data); err != nil {
-		log.Println(err.Error())
-		if err := nc.Publish(m.Reply, []byte(`{"error":"`+err.Error()+`"}`)); err != nil {
-			log.Println(err.Error())
-		}
-	} else {
-		if err = a.Manage(messages, Obfuscate); err != nil {
-			log.Println(err.Error())
-		}
-		adapters["logstash"] = &a
-		body, _ := json.Marshal(adapters["logstash"])
-		if err := nc.Publish(m.Reply, body); err != nil {
-			log.Println(err.Error())
-		}
-	}
+	a, err := NewLogstashAdapter(nc, m.Data)
+	register(&a, m, err)
 }
 
 var newRollbarAdapterListener = func(m *nats.Msg) {
-	if a, err := NewRollbarAdapter(nc, m.Data); err != nil {
-		log.Println(err.Error())
-		if err := nc.Publish(m.Reply, []byte(`{"error":"`+err.Error()+`"}`)); err != nil {
-			log.Println(err.Error())
-		}
-	} else {
-		if err = a.Manage(messages, Obfuscate); err != nil {
-			log.Println(err.Error())
-		}
-		adapters["rollbar"] = &a
-		body, _ := json.Marshal(adapters["rollbar"])
-		if err := nc.Publish(m.Reply, body); err != nil {
-			log.Println(err.Error())
-		}
-	}
+	a, err := NewRollbarAdapter(nc, m.Data)
+	register(&a, m, err)
 }
 
 // GenericAdapter : Minimal implementation of an adapter
@@ -174,10 +156,12 @@ var addPatterns = func(m *nats.Msg) {
 
 // DefaultAdapter : creates the default adapter (basic in this case)
 func DefaultAdapter() {
-	if path := os.Getenv("ERNEST_LOG_FILE"); path != "" {
-		m := nats.Msg{}
-		m.Data = []byte(`{"type":"basic","logfile":"` + path + `"}`)
-		newBasicAdapterListener(&m)
+	if err := load(); err != nil {
+		if path := os.Getenv("ERNEST_LOG_FILE"); path != "" {
+			m := nats.Msg{}
+			m.Data = []byte(`{"type":"basic","logfile":"` + path + `"}`)
+			newBasicAdapterListener(&m)
+		}
 	}
 }
 

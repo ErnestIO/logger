@@ -46,7 +46,7 @@ func getNeedles() (needles []string, err error) {
 	if err != nil {
 		return needles, err
 	}
-	json.Unmarshal(msg.Data, &datacenters)
+	_ = json.Unmarshal(msg.Data, &datacenters)
 	if len(datacenters) == 0 {
 		needles = append(needles, "")
 	} else {
