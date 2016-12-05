@@ -59,17 +59,12 @@ func (l *RollbarAdapter) Manage(subjects []string, fn MessageProcessor) (err err
 
 // Stop : stops current subscriptions
 func (l *RollbarAdapter) Stop() {
-	log.Println("Stopping basic logger")
+	log.Println("Stopping rollbar logger")
 	for _, s := range l.Subscribers {
 		if err := s.Unsubscribe(); err != nil {
 			log.Println(err.Error())
 		}
 	}
-	if err := l.File.Close(); err != nil {
-		log.Println("An error occurred trying to close the file")
-		log.Println(err.Error())
-	}
-	log.SetOutput(os.Stdout)
 }
 
 // Name : get the adapter name
