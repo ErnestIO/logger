@@ -15,9 +15,9 @@ var obfuscation = "[OBFUSCATED]"
 
 // Datacenter holds datacenter passwords
 type Datacenter struct {
-	Pwd    string `json:"password"`
-	Token  string `json:"token"`
-	Secret string `json:"secret"`
+	Pwd             string `json:"password"`
+	AccessKeyID     string `json:"aws_access_key_id"`
+	SecretAccessKey string `json:"aws_secret_access_key"`
 }
 
 // Obfuscate : obfuscates sensible data on the given stack
@@ -63,10 +63,10 @@ func addDatacenterPatterns(d Datacenter, needles *[]string) {
 	if d.Pwd != "" {
 		*needles = append(*needles, d.Pwd)
 	}
-	if d.Token != "" {
-		*needles = append(*needles, d.Token)
+	if d.AccessKeyID != "" {
+		*needles = append(*needles, d.AccessKeyID)
 	}
-	if d.Secret != "" {
-		*needles = append(*needles, d.Secret)
+	if d.SecretAccessKey != "" {
+		*needles = append(*needles, d.SecretAccessKey)
 	}
 }
