@@ -11,17 +11,17 @@ import (
 
 // Message holds the general structure of all messages
 type Message struct {
-	Datacenter     Datacenter  `json:"datacenter"`
-	Datacenters    Itemable    `json:"datacenters"`
-	Components     []PwdStruct `json:"components"`
-	Password       string      `json:"datacenter_password"`
-	Token          string      `json:"datacenter_token"`
-	Secret         string      `json:"datacenter_secret"`
-	ConfigPassword string      `json:"password"`
-	ConfigToken    string      `json:"datacenter_access_token"`
-	ConfigSecret   string      `json:"datacenter_access_key"`
-	BasicToken     string      `json:"token"`
-	BasicSecret    string      `json:"secret"`
+	Datacenter      Datacenter  `json:"datacenter"`
+	Datacenters     Itemable    `json:"datacenters"`
+	Components      []PwdStruct `json:"components"`
+	Password        string      `json:"datacenter_password"`
+	AccessKeyID     string      `json:"aws_access_key_id"`
+	SecretAccessKey string      `json:"aws_secret_access_key"`
+	ConfigPassword  string      `json:"password"`
+	ConfigToken     string      `json:"datacenter_access_token"`
+	ConfigSecret    string      `json:"datacenter_access_key"`
+	BasicToken      string      `json:"token"`
+	BasicSecret     string      `json:"secret"`
 }
 
 // Itemable holds any items for any datacenters
@@ -32,8 +32,8 @@ type Itemable struct {
 // PwdStruct holds datacenter passwords for other items
 type PwdStruct struct {
 	Pwd    string `json:"datacenter_password"`
-	Token  string `json:"datacenter_token"`
-	Secret string `json:"datacenter_secret"`
+	Token  string `json:"aws_access_key_id"`
+	Secret string `json:"aws_secret_access_key"`
 }
 
 // ServiceSet : ...
@@ -161,12 +161,12 @@ func processTokens(m *Message) []string {
 		}
 	}
 	for _, d := range m.Datacenters.Items {
-		if d.Token != "" {
-			pwds = append(pwds, d.Token)
+		if d.AccessKeyID != "" {
+			pwds = append(pwds, d.AccessKeyID)
 		}
 	}
-	if m.Token != "" {
-		pwds = append(pwds, m.Token)
+	if m.AccessKeyID != "" {
+		pwds = append(pwds, m.AccessKeyID)
 	}
 	if m.ConfigToken != "" {
 		pwds = append(pwds, m.ConfigToken)
@@ -175,8 +175,8 @@ func processTokens(m *Message) []string {
 		pwds = append(pwds, m.BasicToken)
 	}
 
-	if m.Datacenter.Token != "" {
-		pwds = append(pwds, m.Datacenter.Token)
+	if m.Datacenter.AccessKeyID != "" {
+		pwds = append(pwds, m.Datacenter.AccessKeyID)
 	}
 
 	return pwds
@@ -213,12 +213,12 @@ func processSecrets(m *Message) []string {
 		}
 	}
 	for _, d := range m.Datacenters.Items {
-		if d.Secret != "" {
-			pwds = append(pwds, d.Secret)
+		if d.SecretAccessKey != "" {
+			pwds = append(pwds, d.SecretAccessKey)
 		}
 	}
-	if m.Secret != "" {
-		pwds = append(pwds, m.Secret)
+	if m.SecretAccessKey != "" {
+		pwds = append(pwds, m.SecretAccessKey)
 	}
 	if m.ConfigSecret != "" {
 		pwds = append(pwds, m.ConfigSecret)
@@ -226,8 +226,8 @@ func processSecrets(m *Message) []string {
 	if m.BasicSecret != "" {
 		pwds = append(pwds, m.BasicSecret)
 	}
-	if m.Datacenter.Secret != "" {
-		pwds = append(pwds, m.Datacenter.Secret)
+	if m.Datacenter.SecretAccessKey != "" {
+		pwds = append(pwds, m.Datacenter.SecretAccessKey)
 	}
 
 	return pwds
