@@ -1,8 +1,15 @@
+machine:
+  environment:
+    ROOTPATH: /home/ubuntu/.go_workspace/src/github.com/ernestio
+
 dependencies:
   pre:
-    - make dev-deps
+    - mkdir -p $ROOTPATH/
+    - rm -rf $ROOTPATH/logger
+    - cp -R /home/ubuntu/logger $ROOTPATH/logger
+    - cd $ROOTPATH/logger/ && make dev-deps
 
 test:
   override:
-    - make lint
-    - make test
+    - cd $ROOTPATH/logger/ && make test
+    - cd $ROOTPATH/logger/ && make lint

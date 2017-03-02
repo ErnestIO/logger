@@ -16,7 +16,7 @@ deps:
 	go get github.com/ernestio/ernest-config-client
 	go get github.com/stvp/rollbar
 
-dev-deps:
+dev-deps: deps
 	go get github.com/smartystreets/goconvey/convey
 	go get github.com/alecthomas/gometalinter
 	gometalinter --install
