@@ -2,7 +2,7 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-package main
+package adapters
 
 import (
 	"bytes"
@@ -51,7 +51,7 @@ func NewLogstashAdapter(nc *nats.Conn, config []byte) (Adapter, error) {
 }
 
 // Manage : Manages the subscriptions
-func (l *LogstashAdapter) Manage(subjects []string, fn MessageProcessor) error {
+func (l *LogstashAdapter) Manage(subjects []string, fn MessageProcessor) (err error) {
 	for _, subject := range subjects {
 		s, _ := l.Client.Subscribe(subject, func(m *nats.Msg) {
 
@@ -62,7 +62,7 @@ func (l *LogstashAdapter) Manage(subjects []string, fn MessageProcessor) error {
 			if body, err := json.Marshal(lg); err != nil {
 				log.Println(err.Error())
 			} else {
-				if err := l.writeln(body); err != nil {
+				if err = l.writeln(body); err != nil {
 					log.Println(err.Error())
 				}
 			}

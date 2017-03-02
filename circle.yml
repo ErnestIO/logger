@@ -1,6 +1,6 @@
 dependencies:
   pre:
-    - make deps
+    - make dev-deps
 
 test:
   override:

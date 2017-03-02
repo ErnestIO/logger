@@ -11,24 +11,18 @@ import (
 	"runtime"
 
 	ecc "github.com/ernestio/ernest-config-client"
+	ads "github.com/ernestio/logger/adapters"
 	"github.com/nats-io/nats"
 )
-
-// Adapter : interface for Logger adapters
-type Adapter interface {
-	Manage([]string, MessageProcessor) error
-	Stop()
-	Name() string
-}
 
 var silent bool
 var err error
 var nc *nats.Conn
 var messages []string
-var adapters map[string]Adapter
+var adapters map[string]ads.Adapter
 var patternsToObfuscate []string
 
-func register(a *Adapter, m *nats.Msg, err error) {
+func register(a *ads.Adapter, m *nats.Msg, err error) {
 	if err != nil {
 		log.Println(err.Error())
 		if err := nc.Publish(m.Reply, []byte(`{"_error":"`+err.Error()+`"}`)); err != nil {
@@ -48,17 +42,17 @@ func register(a *Adapter, m *nats.Msg, err error) {
 }
 
 var newBasicAdapterListener = func(m *nats.Msg) {
-	a, err := NewBasicAdapter(nc, m.Data)
+	a, err := ads.NewBasicAdapter(nc, m.Data)
 	register(&a, m, err)
 }
 
 var newLogstashAdapterListener = func(m *nats.Msg) {
-	a, err := NewLogstashAdapter(nc, m.Data)
+	a, err := ads.NewLogstashAdapter(nc, m.Data)
 	register(&a, m, err)
 }
 
 var newRollbarAdapterListener = func(m *nats.Msg) {
-	a, err := NewRollbarAdapter(nc, m.Data)
+	a, err := ads.NewRollbarAdapter(nc, m.Data)
 	register(&a, m, err)
 }
 
@@ -127,7 +121,7 @@ var deleteAdapterListener = func(m *nats.Msg) {
 var findAdapterListener = func(m *nats.Msg) {
 	var body []byte
 	var err error
-	active := make([]Adapter, 0)
+	active := make([]ads.Adapter, 0)
 	for _, a := range adapters {
 		if a != nil {
 			active = append(active, a)
@@ -167,7 +161,7 @@ func DefaultAdapter() {
 
 func main() {
 	messages = []string{"*", "*.*", "*.*.*", "*.*.*.*"}
-	adapters = make(map[string]Adapter)
+	adapters = make(map[string]ads.Adapter)
 
 	nc = ecc.NewConfig(os.Getenv("NATS_URI")).Nats()
 
