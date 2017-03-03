@@ -6,3 +6,7 @@ type Adapter interface {
 	Stop()
 	Name() string
 }
+
+// MessageProcessor : Manage will receive this interface in order to
+// process the input messages
+type MessageProcessor func(string) string

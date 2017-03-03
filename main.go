@@ -6,16 +6,22 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"runtime"
+	"time"
 
 	ecc "github.com/ernestio/ernest-config-client"
 	ads "github.com/ernestio/logger/adapters"
 	"github.com/nats-io/nats"
+	"github.com/r3labs/sse"
 )
 
+var s *sse.Server
 var silent bool
+var secret string
 var err error
 var nc *nats.Conn
 var messages []string
@@ -56,6 +62,11 @@ var newRollbarAdapterListener = func(m *nats.Msg) {
 	register(&a, m, err)
 }
 
+var newSseAdapterListener = func(m *nats.Msg) {
+	a, err := ads.NewSseAdapter(nc, m.Data, s)
+	register(&a, m, err)
+}
+
 // GenericAdapter : Minimal implementation of an adapter
 type GenericAdapter struct {
 	Type string `json:"type"`
@@ -85,6 +96,11 @@ var newAdapterListener = func(m *nats.Msg) {
 		deleteAdapterListener(m)
 		silent = false
 		newRollbarAdapterListener(m)
+	case "sse":
+		silent = true
+		deleteAdapterListener(m)
+		silent = false
+		newSseAdapterListener(m)
 	}
 }
 
@@ -112,7 +128,7 @@ var deleteAdapterListener = func(m *nats.Msg) {
 		return
 	}
 
-	if adapter.Type == "logstash" || adapter.Type == "rollbar" {
+	if adapter.Type == "logstash" || adapter.Type == "rollbar" || adapter.Type == "sse" {
 		if _, ok := adapters[adapter.Type]; ok && adapters[adapter.Type] != nil {
 			adapters[adapter.Type].Stop()
 			adapters[adapter.Type] = nil
@@ -173,6 +189,34 @@ func DefaultAdapter() {
 	}
 }
 
+func httpServer() {
+	s = sse.New()
+	s.AutoStream = true
+	s.EncodeBase64 = true
+	defer s.Close()
+
+	mux := http.NewServeMux()
+	mux.HandleFunc("/logs", authMiddleware)
+
+	var cfg struct {
+		Host string `json:"host"`
+		Port string `json:"port"`
+	}
+	msg, err := nc.Request("config.get.logger", []byte(""), 1*time.Second)
+	if err != nil {
+		panic("Can't get logger config")
+	}
+	if err := json.Unmarshal(msg.Data, &cfg); err != nil {
+		panic("Can't process logger config")
+	}
+
+	host := cfg.Host
+	port := cfg.Port
+
+	addr := fmt.Sprintf("%s:%s", host, port)
+	_ = http.ListenAndServe(addr, mux)
+}
+
 func main() {
 	messages = []string{"*", "*.*", "*.*.*", "*.*.*.*"}
 	adapters = make(map[string]ads.Adapter)
@@ -196,6 +240,8 @@ func main() {
 	if _, err = nc.Subscribe("datacenter.set", addPatterns); err != nil {
 		log.Println(err.Error())
 	}
+
+	httpServer()
 
 	runtime.Goexit()
 }

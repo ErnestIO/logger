@@ -14,10 +14,6 @@ import (
 	"github.com/nats-io/nats"
 )
 
-// MessageProcessor : Manage will receive this interface in order to
-// process the input messages
-type MessageProcessor func(string) string
-
 // BasicAdapter : Will send logs to a plain file
 type BasicAdapter struct {
 	Type        string               `json:"type"`

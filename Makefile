@@ -11,10 +11,12 @@ test:
 	go test -v ./... --cover
 
 deps:
+	go get github.com/r3labs/sse
 	go get github.com/r3labs/nats_to_logstash
 	go get github.com/nats-io/nats
 	go get github.com/ernestio/ernest-config-client
 	go get github.com/stvp/rollbar
+	go get github.com/dgrijalva/jwt-go
 
 dev-deps: deps
 	go get github.com/smartystreets/goconvey/convey
