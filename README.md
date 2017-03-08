@@ -49,7 +49,8 @@ $ make install
 
 Running the tests:
 ```
-make test
+$ make dev-deps
+$ make test
 ```
 
 ## Contributing

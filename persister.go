@@ -36,7 +36,9 @@ func persist(m *nats.Msg) {
 			return
 		}
 		err = ioutil.WriteFile(file, []byte("{}"), 0644)
-		defer f.Close()
+		defer func() {
+			_ = f.Close()
+		}()
 	}
 
 	dat, err := ioutil.ReadFile(file)
