@@ -53,11 +53,20 @@ func NewBasicAdapter(nc *nats.Conn, config []byte) (Adapter, error) {
 func (l *BasicAdapter) Manage(subjects []string, fn MessageProcessor) (err error) {
 	for _, subject := range subjects {
 		s, _ := l.Client.Subscribe(subject, func(m *nats.Msg) {
-			log.Println(m.Subject + " : '" + fn(string(m.Data)) + "'")
+			if m.Subject == "logger.log" {
+				return
+			}
+			username, level := getUsernameLevel(m, l.Client)
+			l.Log(m.Subject, fn(string(m.Data)), level, username)
 		})
 		l.Subscribers = append(l.Subscribers, s)
 	}
 	return err
+}
+
+// Log : Writes a log line
+func (l *BasicAdapter) Log(subject, body, level, user string) {
+	log.Println("level=" + level + " user=" + user + " : " + subject + "  '" + body + "'")
 }
 
 // Stop : stops current subscriptions

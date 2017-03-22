@@ -54,23 +54,30 @@ func NewLogstashAdapter(nc *nats.Conn, config []byte) (Adapter, error) {
 func (l *LogstashAdapter) Manage(subjects []string, fn MessageProcessor) (err error) {
 	for _, subject := range subjects {
 		s, _ := l.Client.Subscribe(subject, func(m *nats.Msg) {
-
-			lg := LogMessage{
-				Subject: m.Subject,
-				Message: fn(string(m.Data)),
+			if m.Subject == "logger.log" {
+				return
 			}
-			if body, err := json.Marshal(lg); err != nil {
-				log.Println(err.Error())
-			} else {
-				if err = l.writeln(body); err != nil {
-					log.Println(err.Error())
-				}
-			}
+			l.Log(m.Subject, fn(string(m.Data)), "debug", "system")
 		})
 		l.Subscribers = append(l.Subscribers, s)
 	}
 
 	return err
+}
+
+// Log : Writes a log line
+func (l *LogstashAdapter) Log(subject, body, level, user string) {
+	lg := LogMessage{
+		Subject: subject,
+		Message: body,
+	}
+	if body, err := json.Marshal(lg); err != nil {
+		log.Println(err.Error())
+	} else {
+		if err = l.writeln(body); err != nil {
+			log.Println(err.Error())
+		}
+	}
 }
 
 // Stop : stops current subscriptions

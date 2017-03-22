@@ -28,6 +28,7 @@ type sseMessage struct {
 	Subject string `json:"subject"`
 	Body    string `json:"body"`
 	Level   string `json:"level"`
+	User    string `json:"user"`
 }
 
 // NewSseAdapter : Basic adapter constructor
@@ -51,18 +52,27 @@ func (l *SseAdapter) Manage(subjects []string, fn MessageProcessor) (err error) 
 	for _, subject := range subjects {
 		log.Println("Subscribed to " + subject)
 		s, _ := l.Client.Subscribe(subject, func(m *nats.Msg) {
+			if m.Subject == "logger.log" {
+				return
+			}
 			output := fmt.Sprintf("%s", fn(string(m.Data)))
 			log.Println("Publising to " + l.UUID + " : " + output)
-			body, _ := json.Marshal(sseMessage{
-				Subject: m.Subject,
-				Body:    output,
-				Level:   "info",
-			})
-			l.Pipe.Publish(l.UUID, body)
+			l.Log(m.Subject, output, "debug", "system")
 		})
 		l.Subscribers = append(l.Subscribers, s)
 	}
 	return err
+}
+
+// Log : Writes a log line
+func (l *SseAdapter) Log(subject, body, level, user string) {
+	output, _ := json.Marshal(sseMessage{
+		Subject: subject,
+		Body:    body,
+		Level:   level,
+		User:    user,
+	})
+	l.Pipe.Publish(l.UUID, output)
 }
 
 // Stop : stops current subscriptions
