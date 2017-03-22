@@ -46,15 +46,23 @@ func (l *RollbarAdapter) Manage(subjects []string, fn MessageProcessor) (err err
 
 	for _, subject := range subjects {
 		s, _ := l.Client.Subscribe(subject, func(m *nats.Msg) {
-			if strings.Contains(m.Subject, ".error") {
-				rollbar.Message("error", m.Subject+" : '"+fn(string(m.Data))+"'")
-			} else {
-				rollbar.Message("info", m.Subject+" : '"+fn(string(m.Data))+"'")
+			if m.Subject == "logger.log" {
+				return
 			}
+			level := "info"
+			if strings.Contains(subject, ".error") {
+				level = "error"
+			}
+			l.Log(m.Subject, fn(string(m.Data)), level, "system")
 		})
 		l.Subscribers = append(l.Subscribers, s)
 	}
 	return err
+}
+
+// Log : Writes a log line
+func (l *RollbarAdapter) Log(subject, body, level, user string) {
+	rollbar.Message(level, subject+" : '"+body+"'")
 }
 
 // Stop : stops current subscriptions

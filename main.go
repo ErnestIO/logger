@@ -283,6 +283,10 @@ func main() {
 		log.Println(err.Error())
 	}
 
+	if _, err = nc.Subscribe("logger.log", logListener); err != nil {
+		log.Println(err.Error())
+	}
+
 	httpServer()
 
 	runtime.Goexit()
