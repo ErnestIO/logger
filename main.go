@@ -115,6 +115,10 @@ var deleteAdapterListener = func(m *nats.Msg) {
 		}
 	}
 
+	if adapters[adapter.Type] == nil {
+		return
+	}
+
 	if adapter.Type == "basic" {
 		if silent == true {
 			adapters[adapter.Type].Stop()
