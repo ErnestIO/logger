@@ -8,8 +8,11 @@ dependencies:
     - rm -rf $ROOTPATH/logger
     - cp -R /home/ubuntu/logger $ROOTPATH/logger
     - cd $ROOTPATH/logger/ && make dev-deps
+    - rm -rf $ROOTPATH/toolset/ && git clone git@github.com:ernestio/toolset.git $ROOTPATH/toolset/
+    - cd $ROOTPATH/toolset/ernestci/ && bundle install
 
 test:
   override:
     - cd $ROOTPATH/logger/ && make test
+    - ruby $ROOTPATH/toolset/ernestci/run.rb .ernest-ci
     - cd $ROOTPATH/logger/ && make lint
