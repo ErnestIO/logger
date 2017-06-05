@@ -18,6 +18,10 @@ type Datacenter struct {
 	Pwd             string `json:"password"`
 	AccessKeyID     string `json:"aws_access_key_id"`
 	SecretAccessKey string `json:"aws_secret_access_key"`
+	SubscriptionID  string `json:"azure_subscription_id"`
+	ClientID        string `json:"azure_client_id"`
+	ClientSecret    string `json:"azure_client_secret"`
+	TenantID        string `json:"azure_tenant_id"`
 }
 
 // Obfuscate : obfuscates sensible data on the given stack
@@ -68,5 +72,17 @@ func addDatacenterPatterns(d Datacenter, needles *[]string) {
 	}
 	if d.SecretAccessKey != "" {
 		*needles = append(*needles, d.SecretAccessKey)
+	}
+	if d.SubscriptionID != "" {
+		*needles = append(*needles, d.SubscriptionID)
+	}
+	if d.ClientID != "" {
+		*needles = append(*needles, d.ClientID)
+	}
+	if d.ClientSecret != "" {
+		*needles = append(*needles, d.ClientSecret)
+	}
+	if d.TenantID != "" {
+		*needles = append(*needles, d.TenantID)
 	}
 }

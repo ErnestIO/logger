@@ -22,6 +22,10 @@ type Message struct {
 	ConfigSecret    string      `json:"datacenter_access_key"`
 	BasicToken      string      `json:"token"`
 	BasicSecret     string      `json:"secret"`
+	SubscriptionID  string      `json:"azure_subscription_id"`
+	ClientID        string      `json:"azure_client_id"`
+	ClientSecret    string      `json:"azure_client_secret"`
+	TenantID        string      `json:"azure_tenant_id"`
 }
 
 // Itemable holds any items for any datacenters
@@ -31,9 +35,13 @@ type Itemable struct {
 
 // PwdStruct holds datacenter passwords for other items
 type PwdStruct struct {
-	Pwd    string `json:"datacenter_password"`
-	Token  string `json:"aws_access_key_id"`
-	Secret string `json:"aws_secret_access_key"`
+	Pwd            string `json:"datacenter_password"`
+	Token          string `json:"aws_access_key_id"`
+	Secret         string `json:"aws_secret_access_key"`
+	SubscriptionID string `json:"azure_subscription_id"`
+	ClientID       string `json:"azure_client_id"`
+	ClientSecret   string `json:"azure_client_secret"`
+	TenantID       string `json:"azure_tenant_id"`
 }
 
 // ServiceSet : ...
@@ -75,6 +83,50 @@ func PreProcess(s string) string {
 		s = strings.Replace(s, mappingSecret, obfuscation, -1)
 	}
 	for _, l := range getSeedFromList(s, getSecrets) {
+		s = strings.Replace(s, l, obfuscation, -1)
+	}
+
+	// SubscriptionID
+	for _, subscriptionID := range getSubscriptionIDs(s) {
+		s = strings.Replace(s, subscriptionID, obfuscation, -1)
+	}
+	for _, mappingSubscriptionID := range getSeedFromMapping(s, getSubscriptionIDs) {
+		s = strings.Replace(s, mappingSubscriptionID, obfuscation, -1)
+	}
+	for _, l := range getSeedFromList(s, getSubscriptionIDs) {
+		s = strings.Replace(s, l, obfuscation, -1)
+	}
+
+	// ClientID
+	for _, clientID := range getClientIDs(s) {
+		s = strings.Replace(s, clientID, obfuscation, -1)
+	}
+	for _, mappingClientID := range getSeedFromMapping(s, getClientIDs) {
+		s = strings.Replace(s, mappingClientID, obfuscation, -1)
+	}
+	for _, l := range getSeedFromList(s, getClientIDs) {
+		s = strings.Replace(s, l, obfuscation, -1)
+	}
+
+	// ClientSecret
+	for _, clientSecret := range getClientSecrets(s) {
+		s = strings.Replace(s, clientSecret, obfuscation, -1)
+	}
+	for _, mappingClientSecret := range getSeedFromMapping(s, getClientSecrets) {
+		s = strings.Replace(s, mappingClientSecret, obfuscation, -1)
+	}
+	for _, l := range getSeedFromList(s, getClientSecrets) {
+		s = strings.Replace(s, l, obfuscation, -1)
+	}
+
+	// TenantID
+	for _, tenantID := range getTenantIDs(s) {
+		s = strings.Replace(s, tenantID, obfuscation, -1)
+	}
+	for _, mappingTenantID := range getSeedFromMapping(s, getTenantIDs) {
+		s = strings.Replace(s, mappingTenantID, obfuscation, -1)
+	}
+	for _, l := range getSeedFromList(s, getTenantIDs) {
 		s = strings.Replace(s, l, obfuscation, -1)
 	}
 
@@ -228,6 +280,186 @@ func processSecrets(m *Message) []string {
 	}
 	if m.Datacenter.SecretAccessKey != "" {
 		pwds = append(pwds, m.Datacenter.SecretAccessKey)
+	}
+
+	return pwds
+}
+
+func getSubscriptionIDs(s string) []string {
+	var pwds []string
+
+	var m Message
+	err := json.Unmarshal([]byte(s), &m)
+	if err == nil {
+		return processSubscriptionIDs(&m)
+	}
+
+	var cm []Message
+	err = json.Unmarshal([]byte(s), &cm)
+	if err != nil {
+		return pwds
+	}
+
+	for _, m := range cm {
+		pwds = append(pwds, processSubscriptionIDs(&m)...)
+	}
+
+	return pwds
+}
+
+func processSubscriptionIDs(m *Message) []string {
+	var pwds []string
+
+	for _, c := range m.Components {
+		if c.SubscriptionID != "" {
+			pwds = append(pwds, c.SubscriptionID)
+		}
+	}
+	for _, d := range m.Datacenters.Items {
+		if d.SubscriptionID != "" {
+			pwds = append(pwds, d.SubscriptionID)
+		}
+	}
+	if m.SubscriptionID != "" {
+		pwds = append(pwds, m.SubscriptionID)
+	}
+	if m.Datacenter.SubscriptionID != "" {
+		pwds = append(pwds, m.Datacenter.SubscriptionID)
+	}
+
+	return pwds
+}
+
+func getClientIDs(s string) []string {
+	var pwds []string
+
+	var m Message
+	err := json.Unmarshal([]byte(s), &m)
+	if err == nil {
+		return processClientIDs(&m)
+	}
+
+	var cm []Message
+	err = json.Unmarshal([]byte(s), &cm)
+	if err != nil {
+		return pwds
+	}
+
+	for _, m := range cm {
+		pwds = append(pwds, processClientIDs(&m)...)
+	}
+
+	return pwds
+}
+
+func processClientIDs(m *Message) []string {
+	var pwds []string
+
+	for _, c := range m.Components {
+		if c.ClientID != "" {
+			pwds = append(pwds, c.ClientID)
+		}
+	}
+	for _, d := range m.Datacenters.Items {
+		if d.ClientID != "" {
+			pwds = append(pwds, d.ClientID)
+		}
+	}
+	if m.ClientID != "" {
+		pwds = append(pwds, m.ClientID)
+	}
+	if m.Datacenter.ClientID != "" {
+		pwds = append(pwds, m.Datacenter.ClientID)
+	}
+
+	return pwds
+}
+
+func getClientSecrets(s string) []string {
+	var pwds []string
+
+	var m Message
+	err := json.Unmarshal([]byte(s), &m)
+	if err == nil {
+		return processClientSecrets(&m)
+	}
+
+	var cm []Message
+	err = json.Unmarshal([]byte(s), &cm)
+	if err != nil {
+		return pwds
+	}
+
+	for _, m := range cm {
+		pwds = append(pwds, processClientSecrets(&m)...)
+	}
+
+	return pwds
+}
+
+func processClientSecrets(m *Message) []string {
+	var pwds []string
+
+	for _, c := range m.Components {
+		if c.ClientSecret != "" {
+			pwds = append(pwds, c.ClientSecret)
+		}
+	}
+	for _, d := range m.Datacenters.Items {
+		if d.ClientSecret != "" {
+			pwds = append(pwds, d.ClientSecret)
+		}
+	}
+	if m.ClientSecret != "" {
+		pwds = append(pwds, m.ClientSecret)
+	}
+	if m.Datacenter.ClientSecret != "" {
+		pwds = append(pwds, m.Datacenter.ClientSecret)
+	}
+
+	return pwds
+}
+
+func getTenantIDs(s string) []string {
+	var pwds []string
+
+	var m Message
+	err := json.Unmarshal([]byte(s), &m)
+	if err == nil {
+		return processTenantIDs(&m)
+	}
+
+	var cm []Message
+	err = json.Unmarshal([]byte(s), &cm)
+	if err != nil {
+		return pwds
+	}
+
+	for _, m := range cm {
+		pwds = append(pwds, processTenantIDs(&m)...)
+	}
+
+	return pwds
+}
+
+func processTenantIDs(m *Message) []string {
+	var pwds []string
+
+	for _, c := range m.Components {
+		if c.TenantID != "" {
+			pwds = append(pwds, c.TenantID)
+		}
+	}
+	for _, d := range m.Datacenters.Items {
+		if d.TenantID != "" {
+			pwds = append(pwds, d.TenantID)
+		}
+	}
+	if m.TenantID != "" {
+		pwds = append(pwds, m.TenantID)
+	}
+	if m.Datacenter.TenantID != "" {
+		pwds = append(pwds, m.Datacenter.TenantID)
 	}
 
 	return pwds
