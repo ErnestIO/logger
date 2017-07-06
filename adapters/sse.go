@@ -58,7 +58,7 @@ func (l *SseAdapter) Manage(subjects []string, fn MessageProcessor) (err error) 
 				Body:    output,
 				Level:   "info",
 			})
-			l.Pipe.Publish(l.UUID, body)
+			l.Pipe.Publish(l.UUID, &sse.Event{Data: body})
 		})
 		l.Subscribers = append(l.Subscribers, s)
 	}
