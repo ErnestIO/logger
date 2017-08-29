@@ -15,13 +15,15 @@ var obfuscation = "[OBFUSCATED]"
 
 // Datacenter holds datacenter passwords
 type Datacenter struct {
-	Pwd             string `json:"password"`
-	AccessKeyID     string `json:"aws_access_key_id"`
-	SecretAccessKey string `json:"aws_secret_access_key"`
-	SubscriptionID  string `json:"azure_subscription_id"`
-	ClientID        string `json:"azure_client_id"`
-	ClientSecret    string `json:"azure_client_secret"`
-	TenantID        string `json:"azure_tenant_id"`
+	Credentials struct {
+		Pwd             string `json:"password"`
+		AccessKeyID     string `json:"aws_access_key_id"`
+		SecretAccessKey string `json:"aws_secret_access_key"`
+		SubscriptionID  string `json:"azure_subscription_id"`
+		ClientID        string `json:"azure_client_id"`
+		ClientSecret    string `json:"azure_client_secret"`
+		TenantID        string `json:"azure_tenant_id"`
+	} `json:"credentials"`
 }
 
 // Obfuscate : obfuscates sensible data on the given stack
@@ -64,25 +66,25 @@ func getNeedles() (needles []string, err error) {
 }
 
 func addDatacenterPatterns(d Datacenter, needles *[]string) {
-	if d.Pwd != "" {
-		*needles = append(*needles, d.Pwd)
+	if d.Credentials.Pwd != "" {
+		*needles = append(*needles, d.Credentials.Pwd)
 	}
-	if d.AccessKeyID != "" {
-		*needles = append(*needles, d.AccessKeyID)
+	if d.Credentials.AccessKeyID != "" {
+		*needles = append(*needles, d.Credentials.AccessKeyID)
 	}
-	if d.SecretAccessKey != "" {
-		*needles = append(*needles, d.SecretAccessKey)
+	if d.Credentials.SecretAccessKey != "" {
+		*needles = append(*needles, d.Credentials.SecretAccessKey)
 	}
-	if d.SubscriptionID != "" {
-		*needles = append(*needles, d.SubscriptionID)
+	if d.Credentials.SubscriptionID != "" {
+		*needles = append(*needles, d.Credentials.SubscriptionID)
 	}
-	if d.ClientID != "" {
-		*needles = append(*needles, d.ClientID)
+	if d.Credentials.ClientID != "" {
+		*needles = append(*needles, d.Credentials.ClientID)
 	}
-	if d.ClientSecret != "" {
-		*needles = append(*needles, d.ClientSecret)
+	if d.Credentials.ClientSecret != "" {
+		*needles = append(*needles, d.Credentials.ClientSecret)
 	}
-	if d.TenantID != "" {
-		*needles = append(*needles, d.TenantID)
+	if d.Credentials.TenantID != "" {
+		*needles = append(*needles, d.Credentials.TenantID)
 	}
 }
