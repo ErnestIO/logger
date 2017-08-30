@@ -227,6 +227,11 @@ func main() {
 
 	nc = ecc.NewConfig(os.Getenv("NATS_URI")).Nats()
 
+	_, err := getNeedles()
+	if err != nil {
+		log.Panic("could not get secrets")
+	}
+
 	DefaultAdapter()
 
 	if _, err = nc.Subscribe("logger.del", deleteAdapterListener); err != nil {
