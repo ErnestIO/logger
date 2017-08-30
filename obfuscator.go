@@ -6,7 +6,6 @@ package main
 
 import (
 	"encoding/json"
-	"log"
 	"strings"
 	"time"
 )
@@ -42,7 +41,6 @@ func Obfuscate(stack string) string {
 }
 
 func getNeedles() (needles []string, err error) {
-	log.Println(len(patternsToObfuscate))
 	if len(patternsToObfuscate) > 0 {
 		return patternsToObfuscate, nil
 	}
@@ -52,7 +50,12 @@ func getNeedles() (needles []string, err error) {
 	if err != nil {
 		return needles, err
 	}
-	_ = json.Unmarshal(msg.Data, &datacenters)
+
+	err = json.Unmarshal(msg.Data, &datacenters)
+	if err != nil {
+		return needles, err
+	}
+
 	if len(datacenters) == 0 {
 		needles = append(needles, "")
 	} else {
