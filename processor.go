@@ -164,8 +164,8 @@ func processPasswords(m *Message) []string {
 	}
 
 	for _, d := range m.Datacenters.Items {
-		if d.Pwd != "" {
-			pwds = append(pwds, d.Pwd)
+		if d.Credentials.Pwd != "" {
+			pwds = append(pwds, d.Credentials.Pwd)
 		}
 	}
 
@@ -175,8 +175,8 @@ func processPasswords(m *Message) []string {
 	if m.ConfigPassword != "" {
 		pwds = append(pwds, m.ConfigPassword)
 	}
-	if m.Datacenter.Pwd != "" {
-		pwds = append(pwds, m.Datacenter.Pwd)
+	if m.Datacenter.Credentials.Pwd != "" {
+		pwds = append(pwds, m.Datacenter.Credentials.Pwd)
 	}
 
 	return pwds
@@ -213,8 +213,8 @@ func processTokens(m *Message) []string {
 		}
 	}
 	for _, d := range m.Datacenters.Items {
-		if d.AccessKeyID != "" {
-			pwds = append(pwds, d.AccessKeyID)
+		if d.Credentials.AccessKeyID != "" {
+			pwds = append(pwds, d.Credentials.AccessKeyID)
 		}
 	}
 	if m.AccessKeyID != "" {
@@ -227,8 +227,8 @@ func processTokens(m *Message) []string {
 		pwds = append(pwds, m.BasicToken)
 	}
 
-	if m.Datacenter.AccessKeyID != "" {
-		pwds = append(pwds, m.Datacenter.AccessKeyID)
+	if m.Datacenter.Credentials.AccessKeyID != "" {
+		pwds = append(pwds, m.Datacenter.Credentials.AccessKeyID)
 	}
 
 	return pwds
@@ -265,8 +265,8 @@ func processSecrets(m *Message) []string {
 		}
 	}
 	for _, d := range m.Datacenters.Items {
-		if d.SecretAccessKey != "" {
-			pwds = append(pwds, d.SecretAccessKey)
+		if d.Credentials.SecretAccessKey != "" {
+			pwds = append(pwds, d.Credentials.SecretAccessKey)
 		}
 	}
 	if m.SecretAccessKey != "" {
@@ -278,8 +278,8 @@ func processSecrets(m *Message) []string {
 	if m.BasicSecret != "" {
 		pwds = append(pwds, m.BasicSecret)
 	}
-	if m.Datacenter.SecretAccessKey != "" {
-		pwds = append(pwds, m.Datacenter.SecretAccessKey)
+	if m.Datacenter.Credentials.SecretAccessKey != "" {
+		pwds = append(pwds, m.Datacenter.Credentials.SecretAccessKey)
 	}
 
 	return pwds
@@ -316,15 +316,15 @@ func processSubscriptionIDs(m *Message) []string {
 		}
 	}
 	for _, d := range m.Datacenters.Items {
-		if d.SubscriptionID != "" {
-			pwds = append(pwds, d.SubscriptionID)
+		if d.Credentials.SubscriptionID != "" {
+			pwds = append(pwds, d.Credentials.SubscriptionID)
 		}
 	}
 	if m.SubscriptionID != "" {
 		pwds = append(pwds, m.SubscriptionID)
 	}
-	if m.Datacenter.SubscriptionID != "" {
-		pwds = append(pwds, m.Datacenter.SubscriptionID)
+	if m.Datacenter.Credentials.SubscriptionID != "" {
+		pwds = append(pwds, m.Datacenter.Credentials.SubscriptionID)
 	}
 
 	return pwds
@@ -361,15 +361,15 @@ func processClientIDs(m *Message) []string {
 		}
 	}
 	for _, d := range m.Datacenters.Items {
-		if d.ClientID != "" {
-			pwds = append(pwds, d.ClientID)
+		if d.Credentials.ClientID != "" {
+			pwds = append(pwds, d.Credentials.ClientID)
 		}
 	}
 	if m.ClientID != "" {
 		pwds = append(pwds, m.ClientID)
 	}
-	if m.Datacenter.ClientID != "" {
-		pwds = append(pwds, m.Datacenter.ClientID)
+	if m.Datacenter.Credentials.ClientID != "" {
+		pwds = append(pwds, m.Datacenter.Credentials.ClientID)
 	}
 
 	return pwds
@@ -406,15 +406,15 @@ func processClientSecrets(m *Message) []string {
 		}
 	}
 	for _, d := range m.Datacenters.Items {
-		if d.ClientSecret != "" {
-			pwds = append(pwds, d.ClientSecret)
+		if d.Credentials.ClientSecret != "" {
+			pwds = append(pwds, d.Credentials.ClientSecret)
 		}
 	}
 	if m.ClientSecret != "" {
 		pwds = append(pwds, m.ClientSecret)
 	}
-	if m.Datacenter.ClientSecret != "" {
-		pwds = append(pwds, m.Datacenter.ClientSecret)
+	if m.Datacenter.Credentials.ClientSecret != "" {
+		pwds = append(pwds, m.Datacenter.Credentials.ClientSecret)
 	}
 
 	return pwds
@@ -451,15 +451,15 @@ func processTenantIDs(m *Message) []string {
 		}
 	}
 	for _, d := range m.Datacenters.Items {
-		if d.TenantID != "" {
-			pwds = append(pwds, d.TenantID)
+		if d.Credentials.TenantID != "" {
+			pwds = append(pwds, d.Credentials.TenantID)
 		}
 	}
 	if m.TenantID != "" {
 		pwds = append(pwds, m.TenantID)
 	}
-	if m.Datacenter.TenantID != "" {
-		pwds = append(pwds, m.Datacenter.TenantID)
+	if m.Datacenter.Credentials.TenantID != "" {
+		pwds = append(pwds, m.Datacenter.Credentials.TenantID)
 	}
 
 	return pwds

@@ -227,6 +227,16 @@ func main() {
 
 	nc = ecc.NewConfig(os.Getenv("NATS_URI")).Nats()
 
+	for {
+		// wait for project store to become available
+		_, err := getNeedles()
+		if err == nil {
+			break
+		}
+		log.Println("could not get secrets")
+		time.Sleep(time.Second * 3)
+	}
+
 	DefaultAdapter()
 
 	if _, err = nc.Subscribe("logger.del", deleteAdapterListener); err != nil {
