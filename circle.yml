@@ -6,5 +6,7 @@ jobs:
      working_directory: /go/src/github.com/ernestio/logger
      steps:
        - checkout
+       - run: docker build -t testbox .
+       - run: docker images
        - run: ls
        - run: docker -v
