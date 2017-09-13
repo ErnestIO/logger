@@ -3,17 +3,17 @@ jobs:
    build:
      machine:
        - image: circleci/classic:201709-01
-         environment:
-           NATS_URI:  nats://127.0.0.1:4222
-           ROOTPATH: /tmp
-           NATS_URI_TEST:  nats://127.0.0.1:4222
-           GOBIN: /go/bin
-           CURRENT_INSTANCE: http://ernest.local:80/
-           JWT_SECRET: test
-           IMPORT_PATH: "github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME"
-           ERNEST_LOG_FILE: '/tmp/ernest.log'
-           ERNEST_APPLY_DELAY: 1
-           ERNEST_CRYPTO_KEY: mMYlPIvI11z20H1BnBmB223355667788
+           environment:
+             NATS_URI:  nats://127.0.0.1:4222
+             ROOTPATH: /tmp
+             NATS_URI_TEST:  nats://127.0.0.1:4222
+             GOBIN: /go/bin
+             CURRENT_INSTANCE: http://ernest.local:80/
+             JWT_SECRET: test
+             IMPORT_PATH: "github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME"
+             ERNEST_LOG_FILE: '/tmp/ernest.log'
+             ERNEST_APPLY_DELAY: 1
+             ERNEST_CRYPTO_KEY: mMYlPIvI11z20H1BnBmB223355667788
 #           CIRCLE_WORKING_DIRECTORY: /tmp
 #     working_directory: /go/src/github.com/ernestio/logger
      steps:
