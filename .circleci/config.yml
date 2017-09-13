@@ -19,19 +19,15 @@ jobs:
      steps:
        - checkout
 
-       - run: pwd
-       - run: cd /tmp
-       - run: pwd
-
-#       - run: echo 127.0.0.1 ernest.local | sudo tee -a /etc/hosts
+       - run: echo 127.0.0.1 ernest.local | sudo tee -a /etc/hosts
 ##       - run: mkdir -p $ROOTPATH
 ##       - run: rm -rf $ROOTPATH/logger
-#       - run: cd $ROOTPATH/logger/ && make dev-deps
-#       - run: rm -rf $ROOTPATH/toolset/ && git clone git@github.com:ernestio/toolset.git $ROOTPATH/toolset/
-#       - run: cd $ROOTPATH/toolset/ernestci/ && bundle install
-#       - run: cd $ROOTPATH/logger/ && make test
-#       - run: ruby $ROOTPATH/toolset/ernestci/run.rb .ernest-ci
-#       - run: cd $ROOTPATH/logger/ && make lint
+       - run: make lint
+       - run: make dev-deps
+       - run: make test
+       - run: git clone git@github.com:ernestio/toolset.git /tmp/toolset/
+       - run: cd /tmp/toolset/ernestci/ && bundle install
+       - run: ruby /tmp/toolset/ernestci/run.rb .ernest-ci
 
 
 #       - setup_remote_docker:
