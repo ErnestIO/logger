@@ -24,7 +24,7 @@ jobs:
            hostname
            docker run -d --name foo quay.io/r3labs/circleci:golang1.8.3 tail -f /dev/null
            docker exec foo hostname
-           docker exec docker run busybox hostname
+           docker exec foo docker run busybox hostname
 
 #       - run: echo 127.0.0.1 ernest.local | sudo tee -a /etc/hosts
 #       - run: sudo mkdir /home/ubuntu
