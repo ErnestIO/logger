@@ -18,8 +18,13 @@ jobs:
 #     working_directory: /go/src/github.com/ernestio/logger
      steps:
        - checkout
+
 #       - setup_remote_docker:
 #           version: 17.07.0-ce
+       - run: whoami
+       - run: pwd
+       - run: docker -v
+       - run: ps -aux
        - run: 
            name: hello
            command: echo hello
