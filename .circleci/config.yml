@@ -29,7 +29,6 @@ jobs:
        - run: ls -lah && pwd
        - run: make lint
        - run: make test
-       - run: ls -lah /tmp/toolset/
        - run: git clone -b f-circleci-v2-680 git@github.com:ernestio/toolset.git /tmp/toolset/
        - run: cd /tmp/toolset/ernestci/ && bundle install
        - run: ruby /tmp/toolset/ernestci/run.rb .ernest-ci
