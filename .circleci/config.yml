@@ -24,7 +24,7 @@ jobs:
            name: ernest
            command: |
              docker run -d --name ernest quay.io/r3labs/circleci:golang1.8.3 tail -f /dev/null
-             docker cp /go/src/github.com/ernestio/logger ernest:/go/src/github.com/ernestio/logger
+             docker cp /go/src/github.com/ernestio/logger ernest:/tmp
              docker cp $DOCKER_CERT_PATH ernest:$DOCKER_CERT_PATH
              docker exec ernest echo 127.0.0.1 ernest.local | sudo tee -a /etc/hosts
              docker exec ernest sudo mkdir /home/ubuntu 
