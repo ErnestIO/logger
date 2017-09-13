@@ -7,7 +7,7 @@ jobs:
            NATS_URI:  nats://127.0.0.1:4222
 #           ROOTPATH: /home/ubuntu/.go_workspace/src/github.com/ernestio
            NATS_URI_TEST:  nats://127.0.0.1:4222
-#           GOBIN: /home/ubuntu/.go_workspace/bin
+           GOBIN: /go/bin
            CURRENT_INSTANCE: http://ernest.local:80/
            JWT_SECRET: test
            IMPORT_PATH: "github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME"
@@ -17,22 +17,18 @@ jobs:
      working_directory: /go/src/github.com/ernestio/logger
      steps:
        - checkout
-       - run: pwd
        - run: echo 127.0.0.1 ernest.local | sudo tee -a /etc/hosts
-       - run: whoami
        - run: sudo mkdir /home/ubuntu
        - run: make dev-deps
-       - run: pwd
-       - run: ls -lah
        - run: make lint
        - run: make test
        - run: git clone git@github.com:ernestio/toolset.git /tmp/toolset/
-       - run: pwd
        - run: cd /tmp/toolset/ernestci && bundle install
-       - run: pwd
-       - run: echo "CIRCLE_WORKING_DIRECTORY = $CIRCLE_WORKING_DIRECTORY"
        - run: echo "GOBIN = $GOBIN"
-       - run: ruby /tmp/toolset/ernestci/run.rb .ernest-ci
+       - run: 
+         command: ruby /tmp/toolset/ernestci/run.rb .ernest-ci
+         environment:
+           CIRCLE_WORKING_DIRECTORY: /tmp
 #       - run: mkdir -p $ROOTPATH/
 #       - run: rm -rf $ROOTPATH/logger
 #       - run: cp -R /home/ubuntu/logger $ROOTPATH/logger
