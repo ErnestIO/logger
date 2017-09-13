@@ -25,6 +25,7 @@ jobs:
 ##       - run: mkdir -p $ROOTPATH
 ##       - run: rm -rf $ROOTPATH/logger
        - run: make dev-deps
+       - run: ls -lah && pwd
        - run: make lint
        - run: make test
        - run: git clone git@github.com:ernestio/toolset.git /tmp/toolset/
