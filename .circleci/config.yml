@@ -14,6 +14,7 @@ jobs:
            ERNEST_LOG_FILE: '/tmp/ernest.log'
            ERNEST_APPLY_DELAY: 1
            ERNEST_CRYPTO_KEY: mMYlPIvI11z20H1BnBmB223355667788
+           CIRCLE_WORKING_DIRECTORY: /tmp
      working_directory: /go/src/github.com/ernestio/logger
      steps:
        - checkout
@@ -26,8 +27,8 @@ jobs:
        - run: cd /tmp/toolset/ernestci && bundle install
        - run: 
            command: ls && echo $CIRCLE_WORKING_DIRECTORY && ruby /tmp/toolset/ernestci/run.rb .ernest-ci
-           environment:
-             CIRCLE_WORKING_DIRECTORY: /tmp
+#           environment:
+#             CIRCLE_WORKING_DIRECTORY: /tmp
 #       - run: mkdir -p $ROOTPATH/
 #       - run: rm -rf $ROOTPATH/logger
 #       - run: cp -R /home/ubuntu/logger $ROOTPATH/logger
