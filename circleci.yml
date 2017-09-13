@@ -23,7 +23,7 @@ machine:
 
 dependencies:
   pre:
-    - mkdir -p $ROOTPATH/
+    - docker -v
     - rm -rf $ROOTPATH/logger
     - cp -R /home/ubuntu/logger $ROOTPATH/logger
     - cd $ROOTPATH/logger/ && make dev-deps
@@ -32,6 +32,7 @@ dependencies:
 
 test:
   override:
+    - docker -v
     - cd $ROOTPATH/logger/ && make test
     - ruby $ROOTPATH/toolset/ernestci/run.rb .ernest-ci
     - cd $ROOTPATH/logger/ && make lint
