@@ -15,7 +15,7 @@ jobs:
          ERNEST_APPLY_DELAY: 1
          ERNEST_CRYPTO_KEY: mMYlPIvI11z20H1BnBmB223355667788
 #           CIRCLE_WORKING_DIRECTORY: /tmp
-     working_directory: /go/src/github.com/ernestio/logger
+#     working_directory: /go/src/github.com/ernestio/logger
      steps:
        - checkout
 #       - setup_remote_docker:
