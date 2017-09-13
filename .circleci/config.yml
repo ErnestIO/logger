@@ -28,7 +28,7 @@ jobs:
        - run: make test
        - run: git clone git@github.com:ernestio/toolset.git /tmp/toolset/
        - run: pwd
-       - run: cd /tmp/toolset && bundle install
+       - run: cd /tmp/toolset/ernestci && bundle install
        - run: pwd
        - run: echo "CIRCLE_WORKING_DIRECTORY = $CIRCLE_WORKING_DIRECTORY"
        - run: echo "GOBIN = $GOBIN"
