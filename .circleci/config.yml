@@ -18,7 +18,8 @@ jobs:
      working_directory: /go/src/github.com/ernestio/logger
      steps:
        - checkout
-       - setup_remote_docker
+       - setup_remote_docker:
+           version: 17.07.0-ce
        - run: echo 127.0.0.1 ernest.local | sudo tee -a /etc/hosts
        - run: sudo mkdir /home/ubuntu
        - run: make dev-deps
