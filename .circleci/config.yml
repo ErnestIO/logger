@@ -23,7 +23,7 @@ jobs:
        - run: make dev-deps
        - run: make lint
        - run: make test
-       - run: git clone git@github.com:ernestio/toolset.git /tmp/toolset/
+       - run: git clone -b f-circleci-v2-680 git@github.com:ernestio/toolset.git /tmp/toolset/
        - run: cd /tmp/toolset/ernestci && bundle install
        - run: 
            command: ls && echo $CIRCLE_WORKING_DIRECTORY && ruby /tmp/toolset/ernestci/run.rb .ernest-ci
