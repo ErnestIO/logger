@@ -241,7 +241,10 @@ func setupFilesystem() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	f.Close()
+	err = f.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func main() {
