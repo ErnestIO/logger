@@ -23,6 +23,7 @@ jobs:
 #           version: 17.07.0-ce
        - run: whoami
        - run: pwd
+       - run: env
        - run: docker -v
        - run: echo $CURRENT_INSTANCE
        - run: ps -aux
