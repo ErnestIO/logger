@@ -20,12 +20,7 @@ jobs:
        - checkout
        - setup_remote_docker:
            version: 17.07.0-ce
-       - run: 
-           name: rah
-           command: |
-             docker run -d --name ernest quay.io/r3labs/circleci:golang1.8.3 tail -f /dev/null
-             docker cp $DOCKER_CERT_PATH ernest:$DOCKER_CERT_PATH
-             docker exec ernest docker -H $DOCKER_HOST --tls --tlscert $DOCKER_CERT_PATH/cert.pem --tlskey $DOCKER_CERT_PATH/key.pem --tlscacert $DOCKER_CERT_PATH/ca.pem run busybox hostname
+
 
 #       - run: |
 #           docker run -d --name ernest quay.io/r3labs/circleci:golang1.8.3 tail -f /dev/null
