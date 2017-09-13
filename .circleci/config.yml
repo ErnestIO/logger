@@ -24,9 +24,8 @@ jobs:
        - run: make test
        - run: git clone git@github.com:ernestio/toolset.git /tmp/toolset/
        - run: cd /tmp/toolset/ernestci && bundle install
-       - run: echo "GOBIN = $GOBIN"
        - run: 
-           command: ruby /tmp/toolset/ernestci/run.rb .ernest-ci
+           command: ls && echo $CIRCLE_WORKING_DIRECTORY && ruby /tmp/toolset/ernestci/run.rb .ernest-ci
            environment:
              CIRCLE_WORKING_DIRECTORY: /tmp
 #       - run: mkdir -p $ROOTPATH/
