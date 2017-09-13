@@ -20,16 +20,23 @@ jobs:
        - checkout
        - setup_remote_docker:
            version: 17.07.0-ce
-       - run: echo 127.0.0.1 ernest.local | sudo tee -a /etc/hosts
-       - run: sudo mkdir /home/ubuntu
-       - run: make dev-deps
-       - run: make lint
-       - run: env
-       - run: make test
-       - run: git clone -b f-circleci-v2-680 git@github.com:ernestio/toolset.git /tmp/toolset/
-       - run: cd /tmp/toolset/ernestci && bundle install
-       - run: 
-           command: ruby /tmp/toolset/ernestci/run.rb .ernest-ci
+       - run: |
+         hostname
+         docker run -d --name foo quay.io/r3labs/circleci:golang1.8.3 tail -f /dev/null
+         docker exec foo hostname
+
+#       - run: echo 127.0.0.1 ernest.local | sudo tee -a /etc/hosts
+#       - run: sudo mkdir /home/ubuntu
+#       - run: make dev-deps
+#       - run: make lint
+#       - run: env
+#       - run: make test
+#       - run: git clone -b f-circleci-v2-680 git@github.com:ernestio/toolset.git /tmp/toolset/
+#       - run: cd /tmp/toolset/ernestci && bundle install
+#       - run: 
+#           command: ruby /tmp/toolset/ernestci/run.rb .ernest-ci
+
+
 #           environment:
 #             CIRCLE_WORKING_DIRECTORY: /tmp
 #       - run: mkdir -p $ROOTPATH/
