@@ -24,6 +24,7 @@ jobs:
        - run: whoami
        - run: pwd
        - run: docker -v
+       - run: echo $CURRENT_INSTANCE
        - run: ps -aux
        - run: 
            name: hello
