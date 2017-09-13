@@ -23,6 +23,7 @@ jobs:
        - checkout
 
        - run: echo 127.0.0.1 ernest.local | sudo tee -a /etc/hosts
+       - run: docker-compose -v
 ##       - run: mkdir -p $ROOTPATH
 ##       - run: rm -rf $ROOTPATH/logger
        - run: make dev-deps
