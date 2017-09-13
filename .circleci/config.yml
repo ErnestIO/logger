@@ -26,9 +26,9 @@ jobs:
        - run: cd /tmp/toolset/ernestci && bundle install
        - run: echo "GOBIN = $GOBIN"
        - run: 
-         command: ruby /tmp/toolset/ernestci/run.rb .ernest-ci
-         environment:
-           CIRCLE_WORKING_DIRECTORY: /tmp
+           command: ruby /tmp/toolset/ernestci/run.rb .ernest-ci
+           environment:
+             CIRCLE_WORKING_DIRECTORY: /tmp
 #       - run: mkdir -p $ROOTPATH/
 #       - run: rm -rf $ROOTPATH/logger
 #       - run: cp -R /home/ubuntu/logger $ROOTPATH/logger
