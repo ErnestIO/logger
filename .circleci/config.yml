@@ -5,15 +5,17 @@ jobs:
        image: circleci/classic:201709-01
      environment:
        NATS_URI:  nats://127.0.0.1:4222
-       ROOTPATH: /home/ubuntu/.go_workspace/src/github.com/ernestio
+       ROOTPATH: /home/circleci/.go_workspace/src/github.com/ernestio
+#       ROOTPATH: /home/ubuntu/.go_workspace/src/github.com/ernestio
        NATS_URI_TEST:  nats://127.0.0.1:4222
-       GOBIN: /home/ubuntu/.go_workspace/bin
+       GOBIN: /home/circleci/.go_workspace/bin
+#       GOBIN: /home/ubuntu/.go_workspace/bin
        CURRENT_INSTANCE: http://ernest.local:80/
        JWT_SECRET: test
        IMPORT_PATH: "github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME"
        ERNEST_LOG_FILE: '/tmp/ernest.log'
        ERNEST_APPLY_DELAY: 1
-       ROOTPATH: /home/ubuntu/.go_workspace/src/github.com/ernestio
+#       ROOTPATH: /home/ubuntu/.go_workspace/src/github.com/ernestio
        ERNEST_CRYPTO_KEY: mMYlPIvI11z20H1BnBmB223355667788
 #     working_directory: /go/src/github.com/ernestio/logger
      steps:
