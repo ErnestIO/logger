@@ -22,6 +22,7 @@ jobs:
        - run: sudo mkdir /home/ubuntu
        - run: make dev-deps
        - run: make lint
+       - run: env
        - run: make test
        - run: git clone -b f-circleci-v2-680 git@github.com:ernestio/toolset.git /tmp/toolset/
        - run: cd /tmp/toolset/ernestci && bundle install
