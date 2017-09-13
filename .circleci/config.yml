@@ -5,9 +5,9 @@ jobs:
        - image: quay.io/r3labs/circleci:golang1.8.3
          environment:
            NATS_URI:  nats://127.0.0.1:4222
-           ROOTPATH: /home/ubuntu/.go_workspace/src/github.com/ernestio
+#           ROOTPATH: /home/ubuntu/.go_workspace/src/github.com/ernestio
            NATS_URI_TEST:  nats://127.0.0.1:4222
-           GOBIN: /home/ubuntu/.go_workspace/bin
+#           GOBIN: /home/ubuntu/.go_workspace/bin
            CURRENT_INSTANCE: http://ernest.local:80/
            JWT_SECRET: test
            IMPORT_PATH: "github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME"
@@ -18,13 +18,16 @@ jobs:
      steps:
        - checkout
        - run: echo 127.0.0.1 ernest.local | sudo tee -a /etc/hosts
+       - run: mkdir /home/ubuntu
        - run: make dev-deps
-       - run: make test
        - run: make lint
+       - run: make test
        - run: git clone git@github.com:ernestio/toolset.git /tmp/toolset/
        - run: pwd
        - run: cd /tmp/toolset && bundle install
        - run: pwd
+       - run: echo "CIRCLE_WORKING_DIRECTORY = $CIRCLE_WORKING_DIRECTORY"
+       - run: echo "GOBIN = $GOBIN"
        - run: ruby /tmp/toolset/ernestci/run.rb .ernest-ci
 #       - run: mkdir -p $ROOTPATH/
 #       - run: rm -rf $ROOTPATH/logger
