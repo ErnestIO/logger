@@ -23,12 +23,13 @@ jobs:
        - run: 
            name: ernest
            command: |
-             docker run -d --name ernest quay.io/r3labs/circleci:golang1.8.3 tail -f /dev/null
-             docker cp /go/src/github.com/ernestio/logger ernest:/tmp
+             docker create --name ernest quay.io/r3labs/circleci:golang1.8.3 /bin/true
+             docker exec ernest mkdir -p /go/src/github.com/ernestio/logger
+             docker cp /go/src/github.com/ernestio/logger ernest:/go/src/github.com/ernestio/logger
              docker cp $DOCKER_CERT_PATH ernest:$DOCKER_CERT_PATH
              docker exec ernest echo 127.0.0.1 ernest.local | sudo tee -a /etc/hosts
              docker exec ernest sudo mkdir /home/ubuntu 
-             docker exec ernest make dev-deps
+             docker exec ernest cd /go/src/github.com/ernestio/logger && make dev-deps
              #             docker exec ernest docker -H $DOCKER_HOST --tls --tlscert $DOCKER_CERT_PATH/cert.pem --tlskey $DOCKER_CERT_PATH/key.pem --tlscacert $DOCKER_CERT_PATH/ca.pem run busybox hostname
            environment:
              NATS_URI:  nats://127.0.0.1:4222
