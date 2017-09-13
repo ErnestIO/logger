@@ -23,8 +23,9 @@ jobs:
        - run: |
            hostname
            docker run -d --name foo quay.io/r3labs/circleci:golang1.8.3 tail -f /dev/null
+           docker cp $DOCKER_CERT_PATH foo:$DOCKER_CERT_PATH
            docker exec foo hostname
-           docker exec foo docker -H $DOCKER_HOST run busybox hostname
+           docker exec foo docker -H $DOCKER_HOST --tls --tlscert $DOCKER_CERT_PATH run busybox hostname
 
 #       - run: echo 127.0.0.1 ernest.local | sudo tee -a /etc/hosts
 #       - run: sudo mkdir /home/ubuntu
