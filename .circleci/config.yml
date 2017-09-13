@@ -5,7 +5,7 @@ jobs:
        - image: quay.io/r3labs/circleci:golang1.8.3
          environment:
            NATS_URI:  nats://127.0.0.1:4222
-#           ROOTPATH: /home/ubuntu/.go_workspace/src/github.com/ernestio
+           ROOTPATH: /tmp
            NATS_URI_TEST:  nats://127.0.0.1:4222
            GOBIN: /go/bin
            CURRENT_INSTANCE: http://ernest.local:80/
@@ -26,7 +26,7 @@ jobs:
        - run: git clone -b f-circleci-v2-680 git@github.com:ernestio/toolset.git /tmp/toolset/
        - run: cd /tmp/toolset/ernestci && bundle install
        - run: 
-           command: ls && echo $CIRCLE_WORKING_DIRECTORY && ruby /tmp/toolset/ernestci/run.rb .ernest-ci
+           command: ruby /tmp/toolset/ernestci/run.rb .ernest-ci
 #           environment:
 #             CIRCLE_WORKING_DIRECTORY: /tmp
 #       - run: mkdir -p $ROOTPATH/
