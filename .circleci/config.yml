@@ -3,29 +3,46 @@ jobs:
    build:
      docker:
        - image: quay.io/r3labs/circleci:golang1.8.3
-         environment:
-           NATS_URI:  nats://127.0.0.1:4222
-           ROOTPATH: /tmp
-           NATS_URI_TEST:  nats://127.0.0.1:4222
-           GOBIN: /go/bin
-           CURRENT_INSTANCE: http://ernest.local:80/
-           JWT_SECRET: test
-           IMPORT_PATH: "github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME"
-           ERNEST_LOG_FILE: '/tmp/ernest.log'
-           ERNEST_APPLY_DELAY: 1
-           ERNEST_CRYPTO_KEY: mMYlPIvI11z20H1BnBmB223355667788
-           CIRCLE_WORKING_DIRECTORY: /tmp
+#         environment:
+#           NATS_URI:  nats://127.0.0.1:4222
+#           ROOTPATH: /tmp
+#           NATS_URI_TEST:  nats://127.0.0.1:4222
+#           GOBIN: /go/bin
+#           CURRENT_INSTANCE: http://ernest.local:80/
+#           JWT_SECRET: test
+#           IMPORT_PATH: "github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME"
+#           ERNEST_LOG_FILE: '/tmp/ernest.log'
+#           ERNEST_APPLY_DELAY: 1
+#           ERNEST_CRYPTO_KEY: mMYlPIvI11z20H1BnBmB223355667788
+#           CIRCLE_WORKING_DIRECTORY: /tmp
      working_directory: /go/src/github.com/ernestio/logger
      steps:
        - checkout
        - setup_remote_docker:
            version: 17.07.0-ce
        - run: 
-           name: rah
+           name: ernest
            command: |
              docker run -d --name ernest quay.io/r3labs/circleci:golang1.8.3 tail -f /dev/null
+             docker cp /go/src/github.com/ernestio/logger ernest:/go/src/github.com/ernestio/logger
              docker cp $DOCKER_CERT_PATH ernest:$DOCKER_CERT_PATH
-             docker exec ernest docker -H $DOCKER_HOST --tls --tlscert $DOCKER_CERT_PATH/cert.pem --tlskey $DOCKER_CERT_PATH/key.pem --tlscacert $DOCKER_CERT_PATH/ca.pem run busybox hostname
+             docker exec ernest echo 127.0.0.1 ernest.local | sudo tee -a /etc/hosts
+             docker exec ernest sudo mkdir /home/ubuntu 
+             docker exec ernest make dev-deps
+             #             docker exec ernest docker -H $DOCKER_HOST --tls --tlscert $DOCKER_CERT_PATH/cert.pem --tlskey $DOCKER_CERT_PATH/key.pem --tlscacert $DOCKER_CERT_PATH/ca.pem run busybox hostname
+           environment:
+             NATS_URI:  nats://127.0.0.1:4222
+             ROOTPATH: /tmp
+             NATS_URI_TEST:  nats://127.0.0.1:4222
+             GOBIN: /go/bin
+             CURRENT_INSTANCE: http://ernest.local:80/
+             JWT_SECRET: test
+             IMPORT_PATH: "github.com/$CIRCLE_PROJECT_USERNAME/$CIRCLE_PROJECT_REPONAME"
+             ERNEST_LOG_FILE: '/tmp/ernest.log'
+             ERNEST_APPLY_DELAY: 1
+             ERNEST_CRYPTO_KEY: mMYlPIvI11z20H1BnBmB223355667788
+             CIRCLE_WORKING_DIRECTORY: /tmp
+ 
 
 #       - run: |
 #           docker run -d --name ernest quay.io/r3labs/circleci:golang1.8.3 tail -f /dev/null
