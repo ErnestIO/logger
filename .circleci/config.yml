@@ -34,4 +34,4 @@ jobs:
            command: |
              git clone -b f-circleci-v2-680 git@github.com:ernestio/toolset.git /tmp/toolset/
              cd /tmp/toolset/ernestci/ && bundle install
-             ruby /tmp/toolset/ernestci/run.rb .ernest-ci
+             ruby /tmp/toolset/ernestci/run.rb $CIRCLE_WORKING_DIRECTORY/.ernest-ci
