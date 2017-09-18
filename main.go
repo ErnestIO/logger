@@ -10,6 +10,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 	"runtime"
 	"time"
 
@@ -221,7 +222,34 @@ func httpServer() {
 	_ = http.ListenAndServe(addr, mux)
 }
 
+func setupFilesystem() {
+	logfile := os.Getenv("ERNEST_LOG_FILE")
+	logcfg := os.Getenv("ERNEST_LOG_CONFIG")
+
+	logdir := filepath.Dir(logfile)
+
+	dirs := []string{logcfg, logdir}
+
+	for _, v := range dirs {
+		err := os.MkdirAll(v, 0755)
+		if err != nil && !os.IsExist(err) {
+			log.Fatal(err)
+		}
+	}
+
+	f, err := os.Create(logfile)
+	if err != nil {
+		log.Fatal(err)
+	}
+	err = f.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
+}
+
 func main() {
+	setupFilesystem()
+
 	messages = []string{"*", "*.*", "*.*.*", "*.*.*.*"}
 	adapters = make(map[string]ads.Adapter)
 

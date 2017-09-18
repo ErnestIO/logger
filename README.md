@@ -1,5 +1,8 @@
 # Logger
 
+master:  [![CircleCI](https://circleci.com/gh/ernestio/logger/tree/master.svg?style=shield)](https://circleci.com/gh/ernestio/logger/tree/master)  
+develop: [![CircleCI](https://circleci.com/gh/ernestio/logger/tree/develop.svg?style=shield)](https://circleci.com/gh/ernestio/logger/tree/develop)
+
 ## Synopsis
 
 Logger is listening for all messages on nats, it will encode the sensible data for each message and will send it to the created logger.
