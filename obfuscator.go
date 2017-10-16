@@ -27,8 +27,11 @@ type Datacenter struct {
 }
 
 // Obfuscate : obfuscates sensible data on the given stack
-func Obfuscate(stack string) string {
+func Obfuscate(subject, stack string) string {
 	stack = PreProcess(stack)
+	if subject == "datacenter.set" || subject == "datacenter.del" {
+		patternsToObfuscate = make([]string, 0)
+	}
 	if needles, err := getNeedles(); err != nil {
 		stack = "[ An error occurred trying to obfuscate this message ]"
 	} else {

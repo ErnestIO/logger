@@ -10,4 +10,4 @@ type Adapter interface {
 
 // MessageProcessor : Manage will receive this interface in order to
 // process the input messages
-type MessageProcessor func(string) string
+type MessageProcessor func(string, string) string
