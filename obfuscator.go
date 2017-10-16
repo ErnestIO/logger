@@ -18,6 +18,7 @@ type Datacenter struct {
 		Pwd             string `json:"password"`
 		AccessKeyID     string `json:"aws_access_key_id"`
 		SecretAccessKey string `json:"aws_secret_access_key"`
+		AzureEnv        string `json:"azure_environment"`
 		SubscriptionID  string `json:"azure_subscription_id"`
 		ClientID        string `json:"azure_client_id"`
 		ClientSecret    string `json:"azure_client_secret"`
@@ -80,6 +81,9 @@ func addDatacenterPatterns(d Datacenter, needles *[]string) {
 	}
 	if d.Credentials.SubscriptionID != "" {
 		*needles = append(*needles, d.Credentials.SubscriptionID)
+	}
+	if d.Credentials.AzureEnv != "" {
+		*needles = append(*needles, d.Credentials.AzureEnv)
 	}
 	if d.Credentials.ClientID != "" {
 		*needles = append(*needles, d.Credentials.ClientID)
