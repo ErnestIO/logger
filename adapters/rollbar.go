@@ -53,7 +53,7 @@ func (l *RollbarAdapter) Manage(subjects []string, fn MessageProcessor) (err err
 			if strings.Contains(subject, ".error") {
 				level = "error"
 			}
-			l.Log(m.Subject, fn(string(m.Data)), level, "system")
+			l.Log(m.Subject, fn(m.Subject, string(m.Data)), level, "system")
 		})
 		l.Subscribers = append(l.Subscribers, s)
 	}

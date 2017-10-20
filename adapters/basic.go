@@ -56,7 +56,7 @@ func (l *BasicAdapter) Manage(subjects []string, fn MessageProcessor) (err error
 			if m.Subject == "logger.log" {
 				return
 			}
-			l.Log(m.Subject, fn(string(m.Data)), "debug", "system")
+			l.Log(m.Subject, fn(m.Subject, string(m.Data)), "debug", "system")
 		})
 		l.Subscribers = append(l.Subscribers, s)
 	}

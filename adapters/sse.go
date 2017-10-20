@@ -55,7 +55,7 @@ func (l *SseAdapter) Manage(subjects []string, fn MessageProcessor) (err error) 
 			if m.Subject == "logger.log" {
 				return
 			}
-			output := fmt.Sprintf("%s", fn(string(m.Data)))
+			output := fmt.Sprintf("%s", fn(m.Subject, string(m.Data)))
 			log.Println("Publising to " + l.UUID + " : " + output)
 			l.Log(m.Subject, output, "debug", "system")
 		})
