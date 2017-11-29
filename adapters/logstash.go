@@ -43,9 +43,11 @@ func NewLogstashAdapter(nc *nats.Conn, config []byte) (Adapter, error) {
 
 	l.Client = nc
 
-	if err := l.writeln([]byte(`{"service":"initial"}`)); err != nil {
-		log.Println(err.Error())
-	}
+	go func() {
+		if err := l.writeln([]byte(`{"service":"initial"}`)); err != nil {
+			log.Println(err.Error())
+		}
+	}()
 
 	return &l, nil
 }
