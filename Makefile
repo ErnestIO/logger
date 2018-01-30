@@ -8,15 +8,11 @@ lint:
 	gometalinter --config .linter.conf
 
 test:
-	go test -v ./... --cover
+	go test --cover -v $(go list ./... | grep -v /vendor/)
 
 deps:
-	go get github.com/r3labs/sse
-	go get github.com/r3labs/nats_to_logstash
-	go get github.com/nats-io/nats
-	go get github.com/ernestio/ernest-config-client
-	go get github.com/stvp/rollbar
-	go get github.com/dgrijalva/jwt-go
+	go get -u github.com/golang/dep/cmd/dep
+	dep ensure
 
 dev-deps: deps
 	go get github.com/smartystreets/goconvey/convey
