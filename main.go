@@ -17,19 +17,19 @@ import (
 	ecc "github.com/ernestio/ernest-config-client"
 	ads "github.com/ernestio/logger/adapters"
 	"github.com/nats-io/nats"
-	"github.com/r3labs/sse"
+	"github.com/r3labs/broadcast"
 )
 
-var s *sse.Server
 var silent bool
 var secret string
 var err error
 var nc *nats.Conn
+var bc *broadcast.Server
 var messages []string
 var adapters map[string]ads.Adapter
 var patternsToObfuscate []string
 
-func register(a *ads.Adapter, m *nats.Msg, err error) {
+func registerAdapter(a *ads.Adapter, m *nats.Msg, err error) {
 	if err != nil {
 		log.Println(err.Error())
 		if err := nc.Publish(m.Reply, []byte(`{"_error":"`+err.Error()+`"}`)); err != nil {
@@ -50,22 +50,17 @@ func register(a *ads.Adapter, m *nats.Msg, err error) {
 
 var newBasicAdapterListener = func(m *nats.Msg) {
 	a, err := ads.NewBasicAdapter(nc, m.Data)
-	register(&a, m, err)
+	registerAdapter(&a, m, err)
 }
 
 var newLogstashAdapterListener = func(m *nats.Msg) {
 	a, err := ads.NewLogstashAdapter(nc, m.Data)
-	register(&a, m, err)
+	registerAdapter(&a, m, err)
 }
 
 var newRollbarAdapterListener = func(m *nats.Msg) {
 	a, err := ads.NewRollbarAdapter(nc, m.Data)
-	register(&a, m, err)
-}
-
-var newSseAdapterListener = func(m *nats.Msg) {
-	a, err := ads.NewSseAdapter(nc, m.Data, s)
-	register(&a, m, err)
+	registerAdapter(&a, m, err)
 }
 
 // GenericAdapter : Minimal implementation of an adapter
@@ -97,11 +92,6 @@ var newAdapterListener = func(m *nats.Msg) {
 		deleteAdapterListener(m)
 		silent = false
 		newRollbarAdapterListener(m)
-	case "sse":
-		silent = true
-		deleteAdapterListener(m)
-		silent = false
-		newSseAdapterListener(m)
 	}
 }
 
@@ -194,34 +184,6 @@ func DefaultAdapter() {
 	}
 }
 
-func httpServer() {
-	s = sse.New()
-	s.AutoStream = true
-	s.EncodeBase64 = true
-	defer s.Close()
-
-	mux := http.NewServeMux()
-	mux.HandleFunc("/logs", authMiddleware)
-
-	var cfg struct {
-		Host string `json:"host"`
-		Port string `json:"port"`
-	}
-	msg, err := nc.Request("config.get.logger", []byte(""), 1*time.Second)
-	if err != nil {
-		panic("Can't get logger config")
-	}
-	if err := json.Unmarshal(msg.Data, &cfg); err != nil {
-		panic("Can't process logger config")
-	}
-
-	host := cfg.Host
-	port := cfg.Port
-
-	addr := fmt.Sprintf("%s:%s", host, port)
-	_ = http.ListenAndServe(addr, mux)
-}
-
 func setupFilesystem() {
 	logfile := os.Getenv("ERNEST_LOG_FILE")
 	logcfg := os.Getenv("ERNEST_LOG_CONFIG")
@@ -287,7 +249,26 @@ func main() {
 		log.Println(err.Error())
 	}
 
-	httpServer()
+	bc = broadcast.New()
+	defer bc.Close()
+
+	s := bc.CreateStream("logs")
+	s.AutoReplay = false
+
+	// Create new HTTP Server and add the route handler
+	mux := http.NewServeMux()
+	mux.HandleFunc("/logs", handler)
+
+	// Subscribe to subjects
+	_, err = nc.Subscribe(">", natsHandler)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	// Start Listening
+	addr := fmt.Sprintf("%s:%s", host, port)
+	_ = http.ListenAndServe(addr, mux)
 
 	runtime.Goexit()
 }
