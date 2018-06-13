@@ -249,6 +249,8 @@ func main() {
 		log.Println(err.Error())
 	}
 
+	secret = os.Getenv("JWT_SECRET")
+
 	bc = broadcast.New()
 	defer bc.Close()
 

@@ -23,8 +23,8 @@ type Session struct {
 	Authenticated bool
 }
 
-func unauthorized(w http.ResponseWriter) error {
-	http.Error(w, "Unauthorized", http.StatusUnauthorized)
+func unauthorized(mt int, c *websocket.Conn) error {
+	_ = c.WriteMessage(mt, []byte(`{"status": "unauthorized"}`))
 	return errors.New("Unauthorized")
 }
 
@@ -49,13 +49,15 @@ func authenticate(w http.ResponseWriter, c *websocket.Conn) (*Session, error) {
 	})
 
 	if err != nil || !token.Valid {
-		_ = c.WriteMessage(mt, []byte(`{"status": "unauthorized"}`))
-		return nil, unauthorized(w)
+		return nil, unauthorized(mt, c)
 	}
 
 	s.Authenticated = true
 	claims, ok := token.Claims.(jwt.MapClaims)
 	if ok {
+		if claims["admin"].(bool) != true {
+			return nil, unauthorized(mt, c)
+		}
 		s.Username = claims["username"].(string)
 	}
 
