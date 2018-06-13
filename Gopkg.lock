@@ -87,13 +87,7 @@
   branch = "master"
   name = "github.com/r3labs/broadcast"
   packages = ["."]
-  revision = "54cc293e8f0266abffe84fb75bdce10f4e63e6f6"
-
-[[projects]]
-  name = "github.com/r3labs/sse"
-  packages = ["."]
-  revision = "ab73c814bbdece537f16e92302cd99d1618d0e0d"
-  version = "1.0.1"
+  revision = "ffd4ac635f6bb0b4b2487dfc8caa30affba45b8c"
 
 [[projects]]
   name = "github.com/smartystreets/assertions"
@@ -142,6 +136,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "f69751222464f788d129af7173e8ac384a7c7e5f2d2e9eaeeedf895c0180bc71"
+  inputs-digest = "da59fb9b2fb65bbceac2078644d6540ecd2b8c563c597de93f71556ef8ede8fa"
   solver-name = "gps-cdcl"
   solver-version = 1
