@@ -254,6 +254,7 @@ func main() {
 
 	s := bc.CreateStream("logs")
 	s.AutoReplay = false
+	s.MaxInactivity = time.Hour * 8760
 
 	// Create new HTTP Server and add the route handler
 	mux := http.NewServeMux()
