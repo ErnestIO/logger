@@ -84,6 +84,12 @@
   revision = "0f4f76b1155209cbdd18da3693f44f4fc9f8275d"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/r3labs/broadcast"
+  packages = ["."]
+  revision = "54cc293e8f0266abffe84fb75bdce10f4e63e6f6"
+
+[[projects]]
   name = "github.com/r3labs/sse"
   packages = ["."]
   revision = "ab73c814bbdece537f16e92302cd99d1618d0e0d"
@@ -136,6 +142,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "8e1f9b1c0dbfdf9237cb9ee6b01702af394073449456951dbc09cf62b1a3ced4"
+  inputs-digest = "f69751222464f788d129af7173e8ac384a7c7e5f2d2e9eaeeedf895c0180bc71"
   solver-name = "gps-cdcl"
   solver-version = 1

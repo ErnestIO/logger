@@ -267,7 +267,7 @@ func main() {
 	}
 
 	// Start Listening
-	addr := fmt.Sprintf("%s:%s", host, port)
+	addr := fmt.Sprintf("%s:%s", "", "22001")
 	_ = http.ListenAndServe(addr, mux)
 
 	runtime.Goexit()

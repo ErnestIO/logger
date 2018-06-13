@@ -3,3 +3,28 @@
  * file, You can obtain one at http://mozilla.org/MPL/2.0/. */
 
 package main
+
+import (
+	"encoding/json"
+
+	"github.com/nats-io/nats"
+)
+
+func natsHandler(msg *nats.Msg) {
+	if msg.Subject == "logger.log" {
+		return
+	}
+
+	body := Obfuscate(msg.Subject, string(msg.Data))
+
+	m := LogMessage{
+		Subject: msg.Subject,
+		Body:    body,
+		Level:   "debug",
+		User:    "system",
+	}
+
+	data, _ := json.Marshal(m)
+
+	bc.Publish("logs", data)
+}
