@@ -11,13 +11,19 @@
   branch = "master"
   name = "github.com/ernestio/ernest-config-client"
   packages = ["."]
-  revision = "d767474ae0ea944ec7ee6b35d2204d2439ee0fae"
+  revision = "3ae64ad7b8e5b19b31ff8a8e0bedcf807989e42e"
 
 [[projects]]
   branch = "master"
   name = "github.com/gopherjs/gopherjs"
   packages = ["js"]
   revision = "178c176a91fe05e3e6c58fa5c989bad19e6cdcb3"
+
+[[projects]]
+  name = "github.com/gorilla/websocket"
+  packages = ["."]
+  revision = "ea4d1f681babbce9545c9c5f3d5194a789c89f5b"
+  version = "v1.2.0"
 
 [[projects]]
   name = "github.com/jinzhu/gorm"
@@ -53,15 +59,10 @@
 [[projects]]
   name = "github.com/nats-io/go-nats"
   packages = [
+    ".",
     "encoders/builtin",
     "util"
   ]
-  revision = "d66cb54e6b7bdd93f0b28afc8450d84c780dfb68"
-  version = "v1.4.0"
-
-[[projects]]
-  name = "github.com/nats-io/nats"
-  packages = ["."]
   revision = "d66cb54e6b7bdd93f0b28afc8450d84c780dfb68"
   version = "v1.4.0"
 
@@ -75,13 +76,13 @@
   branch = "master"
   name = "github.com/r3labs/akira"
   packages = ["."]
-  revision = "0f4f76b1155209cbdd18da3693f44f4fc9f8275d"
+  revision = "8754167cb7b314671eb1e2abf2e9465f2e3d5ad4"
 
 [[projects]]
-  name = "github.com/r3labs/sse"
+  branch = "master"
+  name = "github.com/r3labs/broadcast"
   packages = ["."]
-  revision = "ab73c814bbdece537f16e92302cd99d1618d0e0d"
-  version = "1.0.1"
+  revision = "ffd4ac635f6bb0b4b2487dfc8caa30affba45b8c"
 
 [[projects]]
   name = "github.com/smartystreets/assertions"
@@ -130,6 +131,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "8d4030f5babed175e72979d20d79279f8a7a6f846456d687729d1f8adc5aecab"
+  inputs-digest = "b1d77d519cd35cac717e49fd88f72bf2a3e3dbba8c529c15d37cf7c9532f52c9"
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -4,13 +4,14 @@ import (
 	"encoding/json"
 	"log"
 
-	"github.com/nats-io/nats"
+	"github.com/nats-io/go-nats"
 )
 
 // LogMessage holds the message payload
 type LogMessage struct {
 	Subject string `json:"subject"`
-	Message string `json:"message"`
+	Message string `json:"message,omitempty"`
+	Body    string `json:"body,omitempty"`
 	Level   string `json:"level"`
 	User    string `json:"user"`
 }

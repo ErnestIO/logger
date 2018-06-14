@@ -5,63 +5,66 @@
 package main
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
-	"os"
-	"time"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/gorilla/websocket"
 )
 
-func unauthorized(w http.ResponseWriter) {
-	http.Error(w, "Unauthorized", http.StatusUnauthorized)
+// Session : stores authentication data
+type Session struct {
+	Token         string  `json:"token"`
+	Stream        *string `json:"stream"`
+	EventID       *string `json:"event_id"`
+	Username      string
+	Authenticated bool
 }
 
-func extractToken(r *http.Request) (string, error) {
-	auth := r.Header.Get("Authorization")
-	l := len("Bearer")
-	if len(auth) > l+1 && auth[:l] == "Bearer" {
-		return auth[l+1:], nil
-	}
-	return "", errors.New("Invalid Token")
+func unauthorized(mt int, c *websocket.Conn) error {
+	_ = c.WriteMessage(mt, []byte(`{"status": "unauthorized"}`))
+	return errors.New("Unauthorized")
 }
 
-func authMiddleware(w http.ResponseWriter, r *http.Request) {
-	// Check Auth, Until Proper Auth Service is implemented
-	authToken, err := extractToken(r)
+func authenticate(w http.ResponseWriter, c *websocket.Conn) (*Session, error) {
+	var s Session
+
+	mt, message, err := c.ReadMessage()
 	if err != nil {
-		unauthorized(w)
-		return
+		return nil, badrequest(w)
 	}
 
-	secret = os.Getenv("JWT_SECRET")
-	if secret == "" {
-		token, err := nc.Request("config.get.jwt_token", []byte(""), 1*time.Second)
-		if err != nil {
-			panic("Can't get jwt_config config")
-		}
-
-		secret = string(token.Data)
+	err = json.Unmarshal(message, &s)
+	if err != nil {
+		return nil, badrequest(w)
 	}
 
-	token, err := jwt.Parse(authToken, func(t *jwt.Token) (interface{}, error) {
+	token, err := jwt.Parse(s.Token, func(t *jwt.Token) (interface{}, error) {
 		if t.Method.Alg() != jwt.SigningMethodHS256.Alg() {
 			return nil, fmt.Errorf("unexpected jwt signing method=%v", t.Header["alg"])
 		}
 		return []byte(secret), nil
 	})
 
+	if err != nil || !token.Valid {
+		return nil, unauthorized(mt, c)
+	}
+
+	s.Authenticated = true
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if ok {
+		if claims["admin"].(bool) != true {
+			return nil, unauthorized(mt, c)
+		}
+		s.Username = claims["username"].(string)
+	}
+
+	err = c.WriteMessage(mt, []byte(`{"status": "ok"}`))
 	if err != nil {
-		unauthorized(w)
-		return
+		return nil, internalerror(w)
 	}
 
-	if token.Valid != true {
-		unauthorized(w)
-		return
-	}
-
-	// Pass to sse server
-	s.HTTPHandler(w, r)
+	return &s, nil
 }

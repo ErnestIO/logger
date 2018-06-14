@@ -13,7 +13,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/nats-io/nats"
+	"github.com/nats-io/go-nats"
 )
 
 // LogstashAdapter : Adapter for logging to logstash
