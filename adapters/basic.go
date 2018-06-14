@@ -11,7 +11,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/nats-io/nats"
+	"github.com/nats-io/go-nats"
 )
 
 // BasicAdapter : Will send logs to a plain file

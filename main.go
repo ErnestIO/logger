@@ -16,7 +16,7 @@ import (
 
 	ecc "github.com/ernestio/ernest-config-client"
 	ads "github.com/ernestio/logger/adapters"
-	"github.com/nats-io/nats"
+	"github.com/nats-io/go-nats"
 	"github.com/r3labs/broadcast"
 )
 

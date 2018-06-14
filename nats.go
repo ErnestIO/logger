@@ -7,7 +7,7 @@ package main
 import (
 	"encoding/json"
 
-	"github.com/nats-io/nats"
+	"github.com/nats-io/go-nats"
 )
 
 func natsHandler(msg *nats.Msg) {

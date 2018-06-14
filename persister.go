@@ -10,7 +10,7 @@ import (
 	"log"
 	"os"
 
-	"github.com/nats-io/nats"
+	"github.com/nats-io/go-nats"
 )
 
 // Persistence : representation of the persisted file
